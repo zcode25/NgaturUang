@@ -25,6 +25,6 @@ class BudgetDetail extends Model
     public function expenses()
     {
         return $this->hasMany(Expense::class, 'category_id', 'category_id')
-                    ->where('status', 'active'); // jika perlu filter aktif
+                    ->where('status', 'active');
     }
 }
