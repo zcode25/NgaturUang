@@ -14,21 +14,6 @@
             </div>
             </div>
             <!-- end col -->
-            <div class="col-md-6">
-            <div class="breadcrumb-wrapper">
-                <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item">
-                    <a href="#0">Dashboard</a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">
-                    eCommerce
-                    </li>
-                </ol>
-                </nav>
-            </div>
-            </div>
-            <!-- end col -->
         </div>
         <!-- end row -->
         </div>
@@ -40,7 +25,7 @@
                 <i class="lni lni-dollar"></i>
             </div>
             <div class="content">
-                <h6 class="mb-10">Pengeluaran Per Hari</h6>
+                <h6 class="mb-10">Pengeluaran Hari Ini</h6>
                 <h3 class="text-bold mb-10">{{ number_format($dailyExpense, 0) }} IDR</h3>
             </div>
             </div>
@@ -53,7 +38,7 @@
                 <i class="lni lni-dollar"></i>
             </div>
             <div class="content">
-                <h6 class="mb-10">Pengeluaran Per Bulan</h6>
+                <h6 class="mb-10">Pengeluaran Bulan Ini</h6>
                 <h3 class="text-bold mb-10">{{ number_format($monthlyExpense, 0) }} IDR</h3>
             </div>
             </div>
@@ -66,7 +51,7 @@
                 <i class="lni lni-dollar"></i>
             </div>
             <div class="content">
-                <h6 class="mb-10">Pengeluaran Per Tahun</h6>
+                <h6 class="mb-10">Pengeluaran Tahun Ini</h6>
                 <h3 class="text-bold mb-10">{{ number_format($yearlyExpense, 0) }} IDR</h3>
             </div>
             </div>
@@ -106,7 +91,7 @@
                 </div>
               </div>
               <div class="table-wrapper table-responsive">
-                <table class="table">
+                <table class="table" id="expense-table">
                   <thead>
                     <tr>
                       <th>
