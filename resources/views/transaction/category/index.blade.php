@@ -30,9 +30,12 @@
                       </div>
                     </div>
                     <div class="table-wrapper table-responsive">
-                      <table class="table">
+                      <table class="table" id="category-table">
                         <thead>
                           <tr>
+                            <th>
+                              <h6>No</h6>
+                            </th>
                             <th>
                               <h6>Nama Kategori</h6>
                             </th>
@@ -48,6 +51,9 @@
                         <tbody>
                           @forelse ($categories as $category)
                           <tr>
+                            <td>
+                              <p>{{ $loop->iteration }}</p>
+                            </td>
                             <td>
                               <p>{{ $category->name }}</p>
                             </td>

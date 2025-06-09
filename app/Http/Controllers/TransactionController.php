@@ -19,8 +19,13 @@ class TransactionController extends Controller
 
     public function category()
     {
+        
+        $categories = Category::where('user_id', Auth::id())
+            ->orderBy('name', 'asc')
+            ->get();
+
         return view('transaction.category.index', [
-            'categories' => Category::where('user_id', Auth::id())->get(),
+            'categories' => $categories,
         ]);
     }
 
@@ -93,7 +98,7 @@ class TransactionController extends Controller
 
         $incomes = Income::where('user_id', Auth::id())
             ->where('status', $status)
-            ->orderByDesc('created_at')
+            ->orderBy('created_at', 'desc')
             ->get();
 
         $dailyIncome = Income::where('incomes.user_id', Auth::id())
@@ -320,7 +325,7 @@ class TransactionController extends Controller
 
         $expenses = Expense::where('user_id', Auth::id())
             ->where('status', $status)
-            ->orderByDesc('created_at')
+            ->orderBy('created_at', 'desc')
             ->get();
 
         $dailyExpense = Expense::where('expenses.user_id', Auth::id())
