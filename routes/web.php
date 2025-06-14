@@ -3,10 +3,18 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SignupController;
 use App\Http\Controllers\SigninController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\BudgetController;
 
+// Route::get('/home', function () {
+//     return view('home.index');
+// })->name('home')->middleware('auth');
+
+Route::controller(HomeController::class)->group(function () {
+    Route::get('/home', 'index')->name('home')->middleware('auth');
+});
 
 Route::controller(SigninController::class)->group(function () {
     Route::get('/', 'index')->name('signin')->middleware('guest');
@@ -69,8 +77,3 @@ Route::controller(BudgetController::class)->group(function () {
     Route::get('/budget/{budgetDetail}/budgetDetail', 'budgetDetail')->name('budget.budgetDetail')->middleware('auth');
     Route::delete('/budget/{budgetDetail}/budgetDestroy', 'budgetDestroy')->name('budget.budgetDestroy')->middleware('auth');
 });
-
-
-Route::get('/home', function () {
-    return view('home.index');
-})->name('home')->middleware('auth');
