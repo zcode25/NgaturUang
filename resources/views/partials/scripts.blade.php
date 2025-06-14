@@ -20,6 +20,14 @@
       });
 
       $(document).ready(function () {
+          $('#category-income-table').DataTable();
+      });
+
+      $(document).ready(function () {
+          $('#category-expense-table').DataTable();
+      });
+
+      $(document).ready(function () {
           $('#income-table').DataTable({
               order: [[0, 'desc']] // ini objek, bukan array
           });

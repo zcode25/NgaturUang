@@ -143,6 +143,107 @@
         <!-- End Col -->
         </div>
         <!-- End Row -->
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card-style mb-30">
+                    <div class="title d-flex flex-wrap align-items-center justify-content-between mb-3">
+                      <div class="left">
+                        <h6 class="text-medium mb-30">Tabel Kategori Pemasukan</h6>
+                      </div>
+                    </div>
+                    <div class="table-wrapper table-responsive">
+                      <table class="table" id="category-income-table">
+                        <thead>
+                          <tr>
+                            <th>
+                              <h6>No</h6>
+                            </th>
+                            <th>
+                              <h6>Nama Kategori</h6>
+                            </th>
+                            <th>
+                              <h6>Total</h6>
+                            </th>
+                          </tr>
+                          <!-- end table row-->
+                        </thead>
+                        <tbody>
+                          @forelse ($category_incomes as $category_income)
+                          <tr>
+                            <td>
+                              <p>{{ $loop->iteration }}</p>
+                            </td>
+                            <td>
+                              <p>{{ $category_income->category->name }}</p>
+                            </td>
+                            <td>
+                              <p>{{ number_format($category_income->total, 0) }} IDR</p>
+                            </td>
+                          </tr>
+                          @empty
+                          <tr class="text-center">
+                            <td colspan="3">Belum Ada Data Kategori</td>
+                          </tr>
+                          @endforelse
+                          <!-- end table row -->
+                        </tbody>
+                      </table>
+                      <!-- end table -->
+                    </div>
+                </div>
+            </div>
+        <!-- End Col -->
+            <div class="col-lg-6">
+                <div class="card-style mb-30">
+                    <div class="title d-flex flex-wrap align-items-center justify-content-between mb-3">
+                      <div class="left">
+                        <h6 class="text-medium mb-30">Tabel Kategori Pengeluaran</h6>
+                      </div>
+                    </div>
+                    <div class="table-wrapper table-responsive">
+                      <table class="table" id="category-expense-table">
+                        <thead>
+                          <tr>
+                            <th>
+                              <h6>No</h6>
+                            </th>
+                            <th>
+                              <h6>Nama Kategori</h6>
+                            </th>
+                            <th>
+                              <h6>Total</h6>
+                            </th>
+                          </tr>
+                          <!-- end table row-->
+                        </thead>
+                        <tbody>
+                          @forelse ($category_expenses as $category_expense)
+                          <tr>
+                            <td>
+                              <p>{{ $loop->iteration }}</p>
+                            </td>
+                            <td>
+                              <p>{{ $category_expense->category->name }}</p>
+                            </td>
+                            <td>
+                              <p>{{ number_format($category_expense->total, 0) }} IDR</p>
+                            </td>
+                          </tr>
+                          @empty
+                          <tr class="text-center">
+                            <td colspan="3">Belum Ada Data Kategori</td>
+                          </tr>
+                          @endforelse
+                          <!-- end table row -->
+                        </tbody>
+                      </table>
+                      <!-- end table -->
+                    </div>
+                </div>
+            </div>
+        <!-- End Col -->
+        </div>
+        <!-- End Row -->
     </div>
     <!-- end container -->
     </section>

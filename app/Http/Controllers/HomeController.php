@@ -133,6 +133,22 @@ class HomeController extends Controller
         $data_expense = $expenses->pluck('budget_expense');
         $total_expense = $data_expense->sum();
 
+        $category_incomes = Income::where('user_id', Auth::id())
+                            ->where('status', 'active')
+                            ->select('category_id', DB::raw('SUM(amount) as total'))
+                            ->groupBy('category_id')
+                            ->with('category')
+                            ->orderBy('total', 'desc')
+                            ->get(); 
+
+        $category_expenses = Expense::where('user_id', Auth::id())
+                            ->where('status', 'active')
+                            ->select('category_id', DB::raw('SUM(amount) as total'))
+                            ->groupBy('category_id')
+                            ->with('category')
+                            ->orderBy('total', 'desc')
+                            ->get(); 
+
         return view('home.index', [
             'totalBalance' => $totalBalance,
             'totalIncome' => $totalIncome,
@@ -147,6 +163,8 @@ class HomeController extends Controller
             'selectedDate_expense' => $selectedDate_expense,
             'total_income' => $total_income,
             'total_expense' => $total_expense,
+            'category_incomes' => $category_incomes,
+            'category_expenses' => $category_expenses,
         ]);
     }
     
