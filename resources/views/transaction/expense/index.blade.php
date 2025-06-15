@@ -137,18 +137,18 @@
                         <p>{{ $expense->wallet->name }}  {{ $expense->wallet->account_number ? ' - ' . $expense->wallet->account_number : ''  }} {!! $expense->wallet->status == 'active' ? '<span class="text-success">(Aktif)</span>' : '<span class="text-danger">(Nonaktif)</span>' !!} </p>
                       </td>
                       <td>
-                        <p class="text-danger">+ {{ number_format($expense->amount, 0) }} {{ $expense->wallet->currency }}</p>
+                        <p class="text-danger">- {{ number_format($expense->amount, 0) }} {{ $expense->wallet->currency }}</p>
                       </td>
                       <td>
                         <p class="text-danger"> {{ number_format($expense->exchange_rate, 0) }} IDR</p>
                       </td>
                       @if($expense->exchange_rate != null)
                       <td>
-                        <p class="text-danger">+ {{ number_format($expense->amount * $expense->exchange_rate, 0) }} IDR</p>
+                        <p class="text-danger">- {{ number_format($expense->amount * $expense->exchange_rate, 0) }} IDR</p>
                       </td>
                       @else
                       <td>
-                        <p class="text-danger">+ {{ number_format($expense->amount, 0) }} IDR</p>
+                        <p class="text-danger">- {{ number_format($expense->amount, 0) }} IDR</p>
                       </td>
                       @endif
                       <td>

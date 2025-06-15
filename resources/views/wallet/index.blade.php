@@ -49,14 +49,14 @@
                             'cash' => 'lni lni-dollar',
                             'bank' => 'lni lni-credit-cards',
                             'ewallet' => 'lni lni-wallet',
-                            default => 'lni lni-money-coint',
+                            'other' => 'lni lni-coin',
                         };
 
                         $colorClass = match($wallet->type) {
                             'cash' => 'success',
                             'bank' => 'primary',
                             'ewallet' => 'orange',
-                            default => 'gray',
+                            'other' => 'purple',
                         };
                     @endphp
 
