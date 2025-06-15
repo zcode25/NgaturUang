@@ -153,8 +153,8 @@ class TransactionController extends Controller
     public function incomeCreate() 
     {
         return view('transaction.income.create', [
-            'categories' => Category::where('user_id', Auth::id())->get()->sortByDesc('created_at'),
-            'wallets' => Wallet::where('user_id', Auth::id())->get()->sortByDesc('created_at'),
+            'categories' => Category::where('user_id', Auth::id())->orderBy('name', 'ASC')->get(),
+            'wallets' => Wallet::where('user_id', Auth::id())->orderBy('name', 'ASC')->get(),
         ]);
     }
 
@@ -211,8 +211,8 @@ class TransactionController extends Controller
     {
         return view('transaction.income.edit', [
             'income' => $income,
-            'categories' => Category::where('user_id', Auth::id())->get()->sortByDesc('created_at'),
-            'wallets' => Wallet::where('user_id', Auth::id())->get()->sortByDesc('created_at'),
+            'categories' => Category::where('user_id', Auth::id())->orderBy('name', 'ASC')->get(),
+            'wallets' => Wallet::where('user_id', Auth::id())->orderBy('name', 'ASC')->get(),
         ]);
     }
 
@@ -384,8 +384,8 @@ class TransactionController extends Controller
     public function expenseCreate() 
     {
         return view('transaction.expense.create', [
-            'categories' => Category::where('user_id', Auth::id())->get()->sortByDesc('created_at'),
-            'wallets' => Wallet::where('user_id', Auth::id())->get()->sortByDesc('created_at'),
+            'categories' => Category::where('user_id', Auth::id())->orderBy('name', 'ASC')->get(),
+            'wallets' => Wallet::where('user_id', Auth::id())->orderBy('name', 'ASC')->get(),
         ]);
     }
 
@@ -442,8 +442,8 @@ class TransactionController extends Controller
     {
         return view('transaction.expense.edit', [
             'expense' => $expense,
-            'categories' => Category::where('user_id', Auth::id())->get()->sortByDesc('created_at'),
-            'wallets' => Wallet::where('user_id', Auth::id())->get()->sortByDesc('created_at'),
+            'categories' => Category::where('user_id', Auth::id())->orderBy('name', 'ASC')->get(),
+            'wallets' => Wallet::where('user_id', Auth::id())->orderBy('name', 'ASC')->get(),
         ]);
     }
 
