@@ -13,7 +13,7 @@ class BudgetController extends Controller
 {
     public function index() {
         return view('budget.index', [
-            'budgets' => Budget::where('user_id', Auth::id())->get(),
+            'budgets' => Budget::where('user_id', Auth::id())->orderBy('start_date', 'DESC')->get(),
         ]);
     }
 
@@ -80,10 +80,15 @@ class BudgetController extends Controller
             return redirect()->route('budget')->with('error', 'Anda tidak memiliki akses ke budget ini.');
         }
 
-        $budgetDetails = BudgetDetail::where('budget_id', $budget->id)->with(['category.expenses' => function ($query) use ($budget) {
-            $query->where('status', 'active')
-                ->whereBetween('date', [$budget->start_date, $budget->end_date]);
-        }])->get();
+        $budgetDetails = BudgetDetail::select('budget_details.*')
+                            ->join('categories', 'budget_details.category_id', '=', 'categories.id')
+                            ->where('budget_details.budget_id', $budget->id)
+                            ->with(['category.expenses' => function ($query) use ($budget) {
+                                $query->where('status', 'active')
+                                    ->whereBetween('date', [$budget->start_date, $budget->end_date]);
+                            }])
+                            ->orderBy('categories.name', 'asc')
+                            ->get();
 
         $editDetail = null;
         if ($request->has('edit')) {
@@ -92,7 +97,7 @@ class BudgetController extends Controller
 
         return view('budget.detail', [
             'budget' => $budget,
-            'categories' => Category::where('user_id', Auth::id())->get()->sortByDesc('created_at'),
+            'categories' => Category::where('user_id', Auth::id())->orderBy('name', 'ASC')->get(),
             'budgetDetails' => $budgetDetails,
             'editDetail' => $editDetail
         ]);

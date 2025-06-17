@@ -109,70 +109,80 @@
                       </div>
                     </div>
                     <div class="table-wrapper table-responsive">
+                      @php
+                        $totalAmount = 0;
+                        $totalRemaining = 0;
+                        $totalExpenseAll = 0;
+                      @endphp
                       <table class="table">
                         <thead>
                           <tr>
-                            <th>
-                              <h6>Nama Kategori</h6>
-                            </th>
-                            <th>
-                              <h6>Jumlah</h6>
-                            </th>
-                            <th>
-                              <h6>Jumlah Pengeluaran</h6>
-                            </th>
-                            <th>
-                              <h6>Sisa Anggaran</h6>
-                            </th>
-                            <th class="text-end">
-                              <h6>Aksi</h6>
-                            </th>
+                            <th><h6>Nama Kategori</h6></th>
+                            <th><h6>Jumlah</h6></th>
+                            <th><h6>Jumlah Pengeluaran</h6></th>
+                            <th><h6>Sisa Anggaran</h6></th>
+                            <th class="text-end"><h6>Aksi</h6></th>
                           </tr>
-                          <!-- end table row-->
                         </thead>
                         <tbody>
                           @forelse ($budgetDetails as $budgetDetail)
-                          <tr>
-                            <td>
-                              <p>{{ $budgetDetail->category->name }}</p>
-                            </td>
-                            <td>
-                              <p>Rp {{ number_format($budgetDetail->amount, 0) }}</p>
-                            </td>
-                            <td>
-                              <p>Rp {{ number_format($budgetDetail->category->expenses->sum('amount'), 0) }}</p>
-                            </td>
                             @php
                                 $totalExpense = $budgetDetail->category->expenses->sum('amount');
                                 $remaining = $budgetDetail->amount - $totalExpense;
+                                $totalAmount += $budgetDetail->amount;
+                                $totalExpenseAll += $totalExpense;
+                                $totalRemaining += $remaining;
                             @endphp
-                            <td>
-                              <p class="{{ $remaining < 0 ? 'text-danger' : 'text-success' }}">Rp {{ number_format($remaining, 0) }}</p>
-                            </td>
-                            <td class="action justify-content-end">
-                              <a href="{{ route('budget.detail', ['budget' => $budget->id, 'edit' => $budgetDetail->id]) }}" class="text-primary me-2">
-                                  <i class="lni lni-pencil"></i>
-                              </a>
-                              <a href="{{ route('budget.budgetDetail', ['budgetDetail' => $budgetDetail->id ]) }}" class="text-dark me-2">
-                                <i class="lni lni-search-alt"></i>
-                              </a>
-                              <form id="delete-form-{{ $budgetDetail->id }}" action="{{ route('budget.budgetDestroy', $budgetDetail->id) }}" method="POST" style="display: inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="button" class="btn-delete" data-id="{{ $budgetDetail->id }}">
-                                    <i class="lni lni-trash-can text-danger"></i>
-                                </button>
-                              </form>
-                            </td>
-                          </tr>
+                            <tr>
+                              <td><p>{{ $budgetDetail->category->name }}</p></td>
+                              <td><p>Rp {{ number_format($budgetDetail->amount, 0) }}</p></td>
+                              <td><p>Rp {{ number_format($totalExpense, 0) }}</p></td>
+                              <td>
+                                <p class="{{ $remaining < 0 ? 'text-danger' : 'text-success' }}">
+                                  Rp {{ number_format($remaining, 0) }}
+                                </p>
+                              </td>
+                              <td class="action justify-content-end">
+                                <a href="{{ route('budget.detail', ['budget' => $budget->id, 'edit' => $budgetDetail->id]) }}" class="text-dark me-2">
+                                    <i class="lni lni-pencil"></i>
+                                </a>
+                                <a href="{{ route('budget.budgetDetail', ['budgetDetail' => $budgetDetail->id ]) }}" class="text-dark me-2">
+                                  <i class="lni lni-search-alt"></i>
+                                </a>
+                                <form id="delete-form-{{ $budgetDetail->id }}" action="{{ route('budget.budgetDestroy', $budgetDetail->id) }}" method="POST" style="display: inline;">
+                                  @csrf
+                                  @method('DELETE')
+                                  <button type="button" class="btn-delete" data-id="{{ $budgetDetail->id }}">
+                                      <i class="lni lni-trash-can text-danger"></i>
+                                  </button>
+                                </form>
+                              </td>
+                            </tr>
                           @empty
-                          <tr class="text-center">
-                            <td colspan="5">Belum Ada Data Kategori</td>
-                          </tr>
+                            <tr class="text-center">
+                              <td colspan="5">Belum Ada Data Kategori</td>
+                            </tr>
                           @endforelse
-                          <!-- end table row -->
                         </tbody>
+
+                        @if(count($budgetDetails) > 0)
+                        <tr><td colspan="5" style="height: 20px;"></td></tr>
+                        <tfoot>
+                          <tr class="mt-5">
+                            <th><strong>Total</strong></th>
+                            <th><strong>Rp {{ number_format($totalAmount, 0) }}</strong></th>
+                            <th><strong>Rp {{ number_format($totalExpenseAll, 0) }}</strong></th>
+                            <th>
+                              <strong class="{{ $totalRemaining < 0 ? 'text-danger' : 'text-success' }}">
+                                Rp {{ number_format($totalRemaining, 0) }}
+                              </strong>
+                            </th>
+                            <th></th>
+                          </tr>
+                        </tfoot>
+                        @endif
                       </table>
+
                       <!-- end table -->
                     </div>
                 </div>
