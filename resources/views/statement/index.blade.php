@@ -122,7 +122,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="text-center">Tidak ada transaksi</td>
+                                    <td colspan="5" class="text-center">Tidak ada transaksi</td>
                                 </tr>
                             @endforelse
                         </tbody>
