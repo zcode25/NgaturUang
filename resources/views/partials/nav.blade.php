@@ -54,9 +54,17 @@
           <li class="nav-item {{ request()->is('budget*') ? 'active' : '' }}">
             <a href="{{ route('budget') }}">
               <span class="icon">
-              <span class="mdi mdi-wallet-outline mdi-24px"></span>
+              <span class="mdi mdi-currency-usd mdi-24px"></span>
               </span>
               <span class="text">Anggaran</span>
+            </a>
+          </li>
+          <li class="nav-item {{ request()->is('statement*') ? 'active' : '' }}">
+            <a href="{{ route('statement') }}">
+              <span class="icon">
+              <span class="mdi mdi-file-multiple-outline mdi-24px"></span>
+              </span>
+              <span class="text">Laporan</span>
             </a>
           </li>
           

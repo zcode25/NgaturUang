@@ -7,6 +7,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\BudgetController;
+use App\Http\Controllers\StatementController;
 
 // Route::get('/home', function () {
 //     return view('home.index');
@@ -76,4 +77,8 @@ Route::controller(BudgetController::class)->group(function () {
     Route::put('/budget/{budget}/detail/{budgetDetail}', 'updateDetail')->name('budget.updateDetail')->middleware('auth');
     Route::get('/budget/{budgetDetail}/budgetDetail', 'budgetDetail')->name('budget.budgetDetail')->middleware('auth');
     Route::delete('/budget/{budgetDetail}/budgetDestroy', 'budgetDestroy')->name('budget.budgetDestroy')->middleware('auth');
+});
+
+Route::controller(StatementController::class)->group(function () {
+    Route::get('/statement', 'index')->name('statement')->middleware('auth');
 });
