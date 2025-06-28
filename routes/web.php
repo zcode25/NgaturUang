@@ -81,4 +81,6 @@ Route::controller(BudgetController::class)->group(function () {
 
 Route::controller(StatementController::class)->group(function () {
     Route::get('/statement', 'index')->name('statement')->middleware('auth');
+    Route::get('/statement/export/excel', 'exportExcel')->name('statement.export.excel')->middleware('auth');
+    Route::get('/statement/export/pdf', 'exportPdf')->name('statement.export.pdf')->middleware('auth');
 });

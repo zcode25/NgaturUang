@@ -21,32 +21,50 @@
         <div class="row">
         <div class="col-lg-12">
             <div class="card-style mb-30">
-              <form method="GET">
-                <div class="row mb-3 align-items-end">
-                    <div class="col-xl-4 col-lg-6 col-sm-12">
-                        <div class="input-style-1">
-                            <label for="start_date">Dari Tanggal: <span class="text-danger">*</span></label>
-                            <input type="date" id="start_date" name="start_date" value="{{ $startDate }}">
-                        </div>
-                    </div>
+              {{-- FORM FILTER --}}
+              <form method="GET" action="{{ route('statement') }}">
+                  <div class="row mb-3 align-items-end">
+                      <div class="col-xl-4 col-lg-6 col-sm-12">
+                          <div class="input-style-1">
+                              <label for="start_date">Dari Tanggal: <span class="text-danger">*</span></label>
+                              <input type="date" id="start_date" name="start_date" value="{{ $startDate }}">
+                          </div>
+                      </div>
 
-                    <div class="col-xl-4 col-lg-6 col-sm-12">
-                        <div class="input-style-1">
-                            <label for="end_date">Sampai Tanggal:</label>
-                            <input type="date" id="end_date" name="end_date" value="{{ $endDate }}">
-                        </div>
-                    </div>
+                      <div class="col-xl-4 col-lg-6 col-sm-12">
+                          <div class="input-style-1">
+                              <label for="end_date">Sampai Tanggal:</label>
+                              <input type="date" id="end_date" name="end_date" value="{{ $endDate }}">
+                          </div>
+                      </div>
 
-                    <div class="col-xl-4 col-lg-6 col-sm-12">
+                      <div class="col-xl-4 col-lg-6 col-sm-12">
                         <div class="input-style-1">
                             <label>&nbsp;</label>
                             <button type="submit" class="main-btn primary-btn w-100">Filter</button>
                         </div>
-                    </div>
-                </div>
+                      </div>
+                  </div>
               </form>
-            <!-- End Title -->
-            </div>
+
+              <div class="row mb-3">
+                  <div class="col-xl-12 d-flex gap-2">
+                      <form method="GET" action="{{ route('statement.export.excel') }}">
+                          <input type="hidden" name="start_date" value="{{ $startDate }}">
+                          <input type="hidden" name="end_date" value="{{ $endDate }}">
+                          <button class="main-btn success-btn">Export Excel</button>
+                      </form>
+
+                      <form method="GET" action="{{ route('statement.export.pdf') }}" target="_blank">
+                          <input type="hidden" name="start_date" value="{{ $startDate }}">
+                          <input type="hidden" name="end_date" value="{{ $endDate }}">
+                          <button class="main-btn danger-btn">Export PDF</button>
+                      </form>
+                  </div>
+              </div>
+          </div>
+
+
         </div>
         <!-- End Col -->
         </div>
@@ -80,7 +98,7 @@
                       <div class="card text-center">
                         <div class="card-body">
                           <p class="card-title mb-1">Pengeluaran</p>
-                          <h5 class="card-text text-danger">-Rp {{ number_format($statement['total_expense'], 0) }}</h5>
+                          <h5 class="card-text text-dark">-Rp {{ number_format($statement['total_expense'], 0) }}</h5>
                         </div>
                       </div>
                     </div>
@@ -94,7 +112,6 @@
                     </div>
                   </div>
                   <hr>
-                  <h6 class="text-center mt-4 mb-2">Detail Transaksi</h6>
                   <div class="table-wrapper table-responsive">
                     <table class="table">
                         <thead>
@@ -107,15 +124,16 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <tr>
+                              <td colspan="4"><strong><em>Saldo Awal</em></strong></td>
+                              <td class="text-end"><strong>Rp {{ number_format($statement['saldo_awal'], 0) }}</strong></td>
+                            </tr>
                             @forelse ($statement['transactions'] as $trx)
-                                {{-- @php
-                                    dd($trx);
-                                @endphp --}}
                                 <tr>
-                                  <td>{{ $trx->datetime }}</td>
+                                  <td>{{ \Carbon\Carbon::parse($trx->datetime)->translatedFormat('j F Y') }}</td>
                                   <td>{{ $trx->description }}</td>                                  
                                   <td>{{ $trx->category }}</td>
-                                  <td class="text-end {{ $trx->type === 'income' ? 'text-success' : 'text-danger' }}">
+                                  <td class="text-end {{ $trx->type === 'income' ? 'text-success' : 'text-dark' }}">
                                     {{ $trx->formatted_nominal }}
                                   </td>
                                   <td class="text-end"><strong>{{ $trx->formatted_balance }}</strong></td>
@@ -125,6 +143,10 @@
                                     <td colspan="5" class="text-center">Tidak ada transaksi</td>
                                 </tr>
                             @endforelse
+                            <tr>
+                              <td colspan="4"><strong><em>Saldo Akhir</em></strong></td>
+                              <td class="text-end"><strong>Rp {{ number_format($statement['saldo_akhir'], 0) }}</strong></td>
+                            </tr>
                         </tbody>
                     </table>
                   </div>
