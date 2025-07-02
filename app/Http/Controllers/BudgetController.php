@@ -154,10 +154,12 @@ class BudgetController extends Controller
 
         $budget = $budgetDetail->budget;
 
-        $expenses = Expense::where('category_id', $budgetDetail->category_id)->with(['category.expenses' => function ($query) use ($budget) {
-            $query->where('status', 'active')
-                ->whereBetween('date', [$budget->start_date, $budget->end_date]);
-        }])->orderByDesc('created_at')->get();
+        $expenses = Expense::where('category_id', $budgetDetail->category_id)
+                    ->where('status', 'active')
+                    ->whereBetween('date', [$budget->start_date, $budget->end_date])
+                    ->with('category')
+                    ->orderByDesc('created_at')
+                    ->get();
 
         return view('budget.budgetDetail', [
             'budget' => $budget,
