@@ -135,11 +135,11 @@
                             @endphp
                             <tr>
                               <td><p>{{ $budgetDetail->category->name }}</p></td>
-                              <td><p>Rp {{ number_format($budgetDetail->amount, 0) }}</p></td>
-                              <td><p>Rp {{ number_format($totalExpense, 0) }}</p></td>
+                              <td><p>{{ number_format($budgetDetail->amount, 0) }} IDR</p></td>
+                              <td><p>{{ number_format($totalExpense, 0) }} IDR</p></td>
                               <td>
                                 <p class="{{ $remaining < 0 ? 'text-danger' : 'text-success' }}">
-                                  Rp {{ number_format($remaining, 0) }}
+                                  {{ number_format($remaining, 0) }} IDR
                                 </p>
                               </td>
                               <td class="action justify-content-end">
@@ -170,11 +170,11 @@
                         <tfoot>
                           <tr class="mt-5">
                             <th><strong>Total</strong></th>
-                            <th><strong>Rp {{ number_format($totalAmount, 0) }}</strong></th>
-                            <th><strong>Rp {{ number_format($totalExpenseAll, 0) }}</strong></th>
+                            <th><strong>{{ number_format($totalAmount, 0) }} IDR</strong></th>
+                            <th><strong>{{ number_format($totalExpenseAll, 0) }} IDR</strong></th>
                             <th>
                               <strong class="{{ $totalRemaining < 0 ? 'text-danger' : 'text-success' }}">
-                                Rp {{ number_format($totalRemaining, 0) }}
+                                {{ number_format($totalRemaining, 0) }} IDR
                               </strong>
                             </th>
                             <th></th>

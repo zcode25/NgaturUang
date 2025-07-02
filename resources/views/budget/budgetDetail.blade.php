@@ -28,19 +28,19 @@
                   </div>
                   <div class="col-lg-3">
                     <p class="mb-3">Jumlah</p>
-                    <h6 class="text-medium mb-30">Rp {{ number_format($budgetDetail->amount, 0) }}</h6>
+                    <h6 class="text-medium mb-30">{{ number_format($budgetDetail->amount, 0) }} IDR</h6>
                   </div>
                   <div class="col-lg-3">
                     <p class="mb-3">Jumlah Pengeluaran</p>
-                    <h6 class="text-medium mb-30">Rp {{ number_format($budgetDetail->category->expenses->sum('amount'), 0) }}</h6>
+                    <h6 class="text-medium mb-30">{{ number_format($budgetDetail->category->expenses->sum('amount'), 0) }} IDR</h6>
                   </div>
                   @php
                       $totalExpense = $budgetDetail->category->expenses->sum('amount');
                       $remaining = $budgetDetail->amount - $totalExpense;
                   @endphp
                   <div class="col-lg-3">
-                    <p class="mb-3">Tanggal Akhir</p>
-                    <h6 class="text-medium mb-30 {{ $remaining < 0 ? 'text-danger' : 'text-success' }}">Rp {{ number_format($remaining, 0) }}</h6>
+                    <p class="mb-3">Sisa Anggaran</p>
+                    <h6 class="text-medium mb-30 {{ $remaining < 0 ? 'text-danger' : 'text-success' }}">{{ number_format($remaining, 0) }} IDR</h6>
                   </div>
                 </div>
               </div>
