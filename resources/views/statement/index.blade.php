@@ -33,7 +33,7 @@
 
                       <div class="col-xl-4 col-lg-6 col-sm-12">
                           <div class="input-style-1">
-                              <label for="end_date">Sampai Tanggal:</label>
+                              <label for="end_date">Sampai Tanggal: <span class="text-danger">*</span></label>
                               <input type="date" id="end_date" name="end_date" value="{{ $endDate }}">
                           </div>
                       </div>
@@ -82,7 +82,7 @@
                       <div class="card text-center">
                         <div class="card-body">
                           <p class="card-title mb-1">Saldo Awal</p>
-                          <h5 class="card-text">Rp {{ number_format($statement['saldo_awal'], 0) }}</h5>
+                          <h5 class="card-text">{{ number_format($statement['saldo_awal'], 0) }} IDR</h5>
                         </div>
                       </div>
                     </div>
@@ -90,7 +90,7 @@
                       <div class="card text-center">
                         <div class="card-body">
                           <p class="card-title mb-1">Pemasukan</p>
-                          <h5 class="card-text text-success">+Rp {{ number_format($statement['total_income'], 0) }}</h5>
+                          <h5 class="card-text text-success">+ {{ number_format($statement['total_income'], 0) }} IDR</h5>
                         </div>
                       </div>
                     </div>
@@ -98,7 +98,7 @@
                       <div class="card text-center">
                         <div class="card-body">
                           <p class="card-title mb-1">Pengeluaran</p>
-                          <h5 class="card-text text-dark">-Rp {{ number_format($statement['total_expense'], 0) }}</h5>
+                          <h5 class="card-text text-dark">- {{ number_format($statement['total_expense'], 0) }} IDR</h5>
                         </div>
                       </div>
                     </div>
@@ -106,7 +106,7 @@
                       <div class="card text-center">
                         <div class="card-body">
                           <p class="card-title mb-1">Saldo Akhir</p>
-                          <h5 class="card-text">Rp {{ number_format($statement['saldo_akhir'], 0) }}</h5>
+                          <h5 class="card-text">{{ number_format($statement['saldo_akhir'], 0) }} IDR</h5>
                         </div>
                       </div>
                     </div>
@@ -119,14 +119,14 @@
                                 <th>Tanggal</th>
                                 <th>Rincian Transaksi</th>
                                 <th>Tipe Transaksi</th>
-                                <th class="text-end">Nominal (IDR)</th>
-                                <th class="text-end">Saldo (IDR)</th>
+                                <th class="text-end">Nominal</th>
+                                <th class="text-end">Saldo</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                               <td colspan="4"><strong><em>Saldo Awal</em></strong></td>
-                              <td class="text-end"><strong>Rp {{ number_format($statement['saldo_awal'], 0) }}</strong></td>
+                              <td class="text-end"><strong>{{ number_format($statement['saldo_awal'], 0) }} IDR</strong></td>
                             </tr>
                             @forelse ($statement['transactions'] as $trx)
                                 <tr>
@@ -145,7 +145,7 @@
                             @endforelse
                             <tr>
                               <td colspan="4"><strong><em>Saldo Akhir</em></strong></td>
-                              <td class="text-end"><strong>Rp {{ number_format($statement['saldo_akhir'], 0) }}</strong></td>
+                              <td class="text-end"><strong>{{ number_format($statement['saldo_akhir'], 0) }} IDR</strong></td>
                             </tr>
                         </tbody>
                     </table>

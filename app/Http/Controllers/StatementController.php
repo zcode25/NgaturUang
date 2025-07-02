@@ -87,9 +87,9 @@ class StatementController extends Controller
                     'type' => $trx->type,
                     'category' => $trx->category,
                     'nominal' => $trx->nominal,
-                    'formatted_nominal' => ($trx->type === 'income' ? '+Rp ' : '-Rp ') . number_format($trx->nominal, 0),
+                    'formatted_nominal' => ($trx->type === 'income' ? '+ ' : '- ') . number_format($trx->nominal, 0) . ' IDR',
                     'balance' => $runningBalance,
-                    'formatted_balance' => 'Rp ' . number_format($runningBalance, 0),
+                    'formatted_balance' => number_format($runningBalance, 0) . ' IDR',
                 ];
             });
 
@@ -194,9 +194,9 @@ class StatementController extends Controller
                     'type' => $trx->type,
                     'category' => $trx->category,
                     'nominal' => $trx->nominal,
-                    'formatted_nominal' => ($trx->type === 'income' ? '+Rp ' : '-Rp ') . number_format($trx->nominal, 0),
+                    'formatted_nominal' => ($trx->type === 'income' ? '+ ' : '- ') . number_format($trx->nominal, 0) . ' IDR',
                     'balance' => $runningBalance,
-                    'formatted_balance' => 'Rp ' . number_format($runningBalance, 0),
+                    'formatted_balance' => number_format($runningBalance, 0) . ' IDR',
                 ];
             });
 
