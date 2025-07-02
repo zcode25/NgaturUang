@@ -119,10 +119,10 @@
             <td>Saldo Akhir</td>
         </tr>
         <tr>
-            <td><strong>Rp {{ number_format($statement['saldo_awal'], 0) }}</strong></td>
-            <td class="text-success"><strong>+Rp {{ number_format($statement['total_income'], 0) }}</strong></td>
-            <td><strong>-Rp {{ number_format($statement['total_expense'], 0) }}</strong></td>
-            <td><strong>Rp {{ number_format($statement['saldo_akhir'], 0) }}</strong></td>
+            <td><strong>{{ number_format($statement['saldo_awal'], 0) }} IDR</strong></td>
+            <td class="text-success"><strong>+ {{ number_format($statement['total_income'], 0) }} IDR</strong></td>
+            <td><strong>- {{ number_format($statement['total_expense'], 0) }} IDR</strong></td>
+            <td><strong>{{ number_format($statement['saldo_akhir'], 0) }} IDR</strong></td>
         </tr>
     </table>
 
@@ -134,14 +134,14 @@
                 <th>Tanggal</th>
                 <th>Rincian Transaksi</th>
                 <th>Kategori</th>
-                <th style="text-align: right;">Nominal (IDR)</th>
-                <th style="text-align: right;">Saldo (IDR)</th>
+                <th style="text-align: right;">Nominal</th>
+                <th style="text-align: right;">Saldo</th>
             </tr>
         </thead>
         <tbody>
             <tr>
               <td colspan="4"><strong><em>Saldo Awal</em></strong></td>
-              <td class="text-right"><strong>Rp {{ number_format($statement['saldo_awal'], 0) }}</strong></td>
+              <td class="text-right"><strong>{{ number_format($statement['saldo_awal'], 0) }} IDR</strong></td>
             </tr>
             @forelse ($statement['transactions'] as $trx)
                 <tr>
@@ -160,7 +160,7 @@
             @endforelse
              <tr>
                 <td colspan="4"><strong><em>Saldo Akhir</em></strong></td>
-                <td class="text-right"><strong>Rp {{ number_format($statement['saldo_akhir'], 0) }}</strong></td>
+                <td class="text-right"><strong>{{ number_format($statement['saldo_akhir'], 0) }} IDR</strong></td>
               </tr>
         </tbody>
     </table>
