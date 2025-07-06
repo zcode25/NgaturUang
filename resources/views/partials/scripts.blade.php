@@ -16,27 +16,58 @@
 
     <script>
       $(document).ready(function () {
-          $('#category-table').DataTable();
+          $('#category-table').DataTable({
+            language: {
+              emptyTable: "Tidak ada data",
+              zeroRecords: "Tidak ditemukan hasil",
+              infoEmpty: "Menampilkan 0 data",
+            }
+          });
       });
 
       $(document).ready(function () {
-          $('#category-income-table').DataTable();
+          $('#category-income-table').DataTable({
+            language: {
+              emptyTable: "Tidak ada data",
+              zeroRecords: "Tidak ditemukan hasil",
+              infoEmpty: "Menampilkan 0 data",
+            }
+          });
       });
 
       $(document).ready(function () {
-          $('#category-expense-table').DataTable();
+          $('#category-expense-table').DataTable({
+            language: {
+              emptyTable: "Tidak ada data",
+              zeroRecords: "Tidak ditemukan hasil",
+              infoEmpty: "Menampilkan 0 data",
+            }
+          });
       });
 
       $(document).ready(function () {
+          if ($('#income-table').length) {
           $('#income-table').DataTable({
-              order: [[0, 'desc']] // ini objek, bukan array
+            order: [[0, 'desc']],
+            language: {
+              emptyTable: "Tidak ada data",
+              zeroRecords: "Tidak ditemukan hasil",
+              infoEmpty: "Menampilkan 0 data",
+            }
           });
       });
 
       $(document).ready(function () {
-          $('#expense-table').DataTable({
-              order: [[0, 'desc']] // ini objek, bukan array
-          });
+          if ($('#expense-table').length) {
+            $('#expense-table').DataTable({
+              order: [[0, 'desc']],
+              language: {
+                emptyTable: "Tidak ada data",
+                zeroRecords: "Tidak ditemukan hasil",
+                infoEmpty: "Menampilkan 0 data",
+              }
+            });
+          }
       });
     </script>
 
