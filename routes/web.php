@@ -8,6 +8,8 @@ use App\Http\Controllers\WalletController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\StatementController;
+use App\Http\Controllers\ProfileController;
+use Pest\Plugins\Profile;
 
 // Route::get('/home', function () {
 //     return view('home.index');
@@ -83,4 +85,10 @@ Route::controller(StatementController::class)->group(function () {
     Route::get('/statement', 'index')->name('statement')->middleware('auth');
     Route::get('/statement/export/excel', 'exportExcel')->name('statement.export.excel')->middleware('auth');
     Route::get('/statement/export/pdf', 'exportPdf')->name('statement.export.pdf')->middleware('auth');
+});
+
+Route::controller(ProfileController::class)->group(function () {
+    Route::get('/profile', 'index')->name('profile')->middleware('auth');
+    Route::post('/profile/update', 'update')->name('profile.update')->middleware('auth');
+    Route::post('/profile/change-password', 'changePassword')->name('profile.changePassword')->middleware('auth');
 });

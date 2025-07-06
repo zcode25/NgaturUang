@@ -10,6 +10,7 @@ use App\Models\Wallet;
 use App\Models\Income;
 use App\Models\Expense;
 use Illuminate\Support\Facades\Redis;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -22,16 +23,16 @@ class HomeController extends Controller
         }
 
         $usdToIdr = $response['rates']['IDR'];
+        $userId = Auth::id();
 
-        $wallets = Wallet::where('user_id', Auth::id())->get();
-
+        $wallets = Wallet::where('user_id', $userId)->get();
         $totalBalance = $wallets->sum(function ($wallet) use ($usdToIdr) {
             return $wallet->currency === 'USD'
                 ? $wallet->balance * $usdToIdr
                 : $wallet->balance;
         });
 
-        $totalIncome = Income::where('incomes.user_id', Auth::id())
+        $totalIncome = Income::where('incomes.user_id', $userId)
             ->where('incomes.status', 'active')
             ->selectRaw("SUM(CASE 
                 WHEN wallets.currency = 'USD' THEN incomes.amount * incomes.exchange_rate 
@@ -40,7 +41,7 @@ class HomeController extends Controller
             ->join('wallets', 'incomes.wallet_id', '=', 'wallets.id')
             ->value('total') ?? 0;
 
-        $totalExpense = Expense::where('expenses.user_id', Auth::id())
+        $totalExpense = Expense::where('expenses.user_id', $userId)
             ->where('expenses.status', 'active')
             ->selectRaw("SUM(CASE 
                 WHEN wallets.currency = 'USD' THEN expenses.amount * expenses.exchange_rate 
@@ -49,21 +50,25 @@ class HomeController extends Controller
             ->join('wallets', 'expenses.wallet_id', '=', 'wallets.id')
             ->value('total') ?? 0;
 
+        // Defaults
+        $bulan = null;
+        $tahun = null;
+        $selectedDate_income = null;
+        $selectedDate_expense = null;
 
-        $userId = Auth::id();
-
+        // INCOME DATES
         $date_income = DB::table('incomes')
-        ->select(
-            DB::raw("MIN(date) as tanggal_asli"),
-            DB::raw("DATE_FORMAT(MIN(date), '%M %Y') as tanggal"),
-            DB::raw("MONTH(date) as bulan"),
-            DB::raw("YEAR(date) as tahun")
-        )
-        ->where('user_id', $userId)
-        ->groupBy(DB::raw('YEAR(date)'), DB::raw('MONTH(date)'))
-        ->orderBy(DB::raw('YEAR(date)'), 'desc')
-        ->orderBy(DB::raw('MONTH(date)'), 'desc')
-        ->get();
+            ->select(
+                DB::raw("MIN(date) as tanggal_asli"),
+                DB::raw("DATE_FORMAT(MIN(date), '%M %Y') as tanggal"),
+                DB::raw("MONTH(date) as bulan"),
+                DB::raw("YEAR(date) as tahun")
+            )
+            ->where('user_id', $userId)
+            ->groupBy(DB::raw('YEAR(date)'), DB::raw('MONTH(date)'))
+            ->orderBy(DB::raw('YEAR(date)'), 'desc')
+            ->orderBy(DB::raw('MONTH(date)'), 'desc')
+            ->get();
 
         if ($date_income->count() > 0) {
             $bulan = $date_income[0]->bulan;
@@ -72,40 +77,45 @@ class HomeController extends Controller
         }
 
         if ($request->has('date_income')) {
-            $date = $request->input('date_income'); // format: Y-m
+            $date = $request->input('date_income');
             [$tahun, $bulan] = explode('-', $date);
-            $selectedDate_income = \Carbon\Carbon::createFromDate($tahun, $bulan)->translatedFormat('F Y');
+            $selectedDate_income = Carbon::createFromDate($tahun, $bulan)->translatedFormat('F Y');
         }
 
-        $incomes = Income::select(
-            DB::raw("DATE_FORMAT(date, '%d') as tanggal"),
-            DB::raw("SUM(amount) as budget_income")
-        )
-        ->where('user_id', $userId)
-        ->whereMonth('date', $bulan)
-        ->whereYear('date', $tahun)
-        ->groupBy('date')
-        ->get();
+        $incomes = collect();
+        $labels_income = collect();
+        $data_income = collect();
+        $total_income = 0;
 
+        if ($bulan && $tahun) {
+            $incomes = Income::select(
+                DB::raw("DATE_FORMAT(date, '%d') as tanggal"),
+                DB::raw("SUM(amount) as budget_income")
+            )
+                ->where('user_id', $userId)
+                ->whereMonth('date', $bulan)
+                ->whereYear('date', $tahun)
+                ->groupBy('date')
+                ->get();
 
-        $labels_income = $incomes->pluck('tanggal');
-        $data_income = $incomes->pluck('budget_income');
-        $total_income = $data_income->sum();
+            $labels_income = $incomes->pluck('tanggal');
+            $data_income = $incomes->pluck('budget_income');
+            $total_income = $data_income->sum();
+        }
 
-        // expense diagram
-
+        // EXPENSE DATES
         $date_expense = DB::table('expenses')
-        ->select(
-            DB::raw("MIN(date) as tanggal_asli"),
-            DB::raw("DATE_FORMAT(MIN(date), '%M %Y') as tanggal"),
-            DB::raw("MONTH(date) as bulan"),
-            DB::raw("YEAR(date) as tahun")
-        )
-        ->where('user_id', $userId)
-        ->groupBy(DB::raw('YEAR(date)'), DB::raw('MONTH(date)'))
-        ->orderBy(DB::raw('YEAR(date)'), 'desc')
-        ->orderBy(DB::raw('MONTH(date)'), 'desc')
-        ->get();
+            ->select(
+                DB::raw("MIN(date) as tanggal_asli"),
+                DB::raw("DATE_FORMAT(MIN(date), '%M %Y') as tanggal"),
+                DB::raw("MONTH(date) as bulan"),
+                DB::raw("YEAR(date) as tahun")
+            )
+            ->where('user_id', $userId)
+            ->groupBy(DB::raw('YEAR(date)'), DB::raw('MONTH(date)'))
+            ->orderBy(DB::raw('YEAR(date)'), 'desc')
+            ->orderBy(DB::raw('MONTH(date)'), 'desc')
+            ->get();
 
         if ($date_expense->count() > 0) {
             $bulan = $date_expense[0]->bulan;
@@ -114,40 +124,47 @@ class HomeController extends Controller
         }
 
         if ($request->has('date_expense')) {
-            $date = $request->input('date_expense'); // format: Y-m
+            $date = $request->input('date_expense');
             [$tahun, $bulan] = explode('-', $date);
-            $selectedDate_expense = \Carbon\Carbon::createFromDate($tahun, $bulan)->translatedFormat('F Y');
+            $selectedDate_expense = Carbon::createFromDate($tahun, $bulan)->translatedFormat('F Y');
         }
 
-        $expenses = Expense::select(
-            DB::raw("DATE_FORMAT(date, '%d') as tanggal"),
-            DB::raw("SUM(amount) as budget_expense")
-        )
-        ->where('user_id', $userId)
-        ->whereMonth('date', $bulan)
-        ->whereYear('date', $tahun)
-        ->groupBy('date')
-        ->get();
+        $expenses = collect();
+        $labels_expense = collect();
+        $data_expense = collect();
+        $total_expense = 0;
 
-        $labels_expense = $expenses->pluck('tanggal');
-        $data_expense = $expenses->pluck('budget_expense');
-        $total_expense = $data_expense->sum();
+        if ($bulan && $tahun) {
+            $expenses = Expense::select(
+                DB::raw("DATE_FORMAT(date, '%d') as tanggal"),
+                DB::raw("SUM(amount) as budget_expense")
+            )
+                ->where('user_id', $userId)
+                ->whereMonth('date', $bulan)
+                ->whereYear('date', $tahun)
+                ->groupBy('date')
+                ->get();
 
-        $category_incomes = Income::where('user_id', Auth::id())
-                            ->where('status', 'active')
-                            ->select('category_id', DB::raw('SUM(amount) as total'))
-                            ->groupBy('category_id')
-                            ->with('category')
-                            ->orderBy('total', 'desc')
-                            ->get(); 
+            $labels_expense = $expenses->pluck('tanggal');
+            $data_expense = $expenses->pluck('budget_expense');
+            $total_expense = $data_expense->sum();
+        }
 
-        $category_expenses = Expense::where('user_id', Auth::id())
-                            ->where('status', 'active')
-                            ->select('category_id', DB::raw('SUM(amount) as total'))
-                            ->groupBy('category_id')
-                            ->with('category')
-                            ->orderBy('total', 'desc')
-                            ->get(); 
+        $category_incomes = Income::where('user_id', $userId)
+            ->where('status', 'active')
+            ->select('category_id', DB::raw('SUM(amount) as total'))
+            ->groupBy('category_id')
+            ->with('category')
+            ->orderBy('total', 'desc')
+            ->get();
+
+        $category_expenses = Expense::where('user_id', $userId)
+            ->where('status', 'active')
+            ->select('category_id', DB::raw('SUM(amount) as total'))
+            ->groupBy('category_id')
+            ->with('category')
+            ->orderBy('total', 'desc')
+            ->get();
 
         return view('home.index', [
             'totalBalance' => $totalBalance,

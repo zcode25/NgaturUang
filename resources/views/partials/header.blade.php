@@ -162,7 +162,7 @@
                     </li>
                     <li class="divider"></li>
                     <li>
-                      <a href="#0">
+                      <a href="{{ route('profile') }}">
                         <i class="lni lni-user"></i> Lihat Profil
                       </a>
                     </li>
@@ -174,9 +174,6 @@
                     <li>
                       <a href="#0"> <i class="lni lni-inbox"></i> Messages </a>
                     </li> -->
-                    <li>
-                      <a href="#0"> <i class="lni lni-cog"></i> Pengaturan </a>
-                    </li>
                     <li class="divider"></li>
                     <!-- <li>
                       <a href="{{ route('signout') }}"> <i class="lni lni-exit"></i> Sign Out </a>
