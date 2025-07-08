@@ -108,83 +108,89 @@
                         <h6 class="text-medium mb-30">Tabel Detail Anggaran</h6>
                       </div>
                     </div>
-                    <div class="table-wrapper table-responsive">
-                      @php
-                        $totalAmount = 0;
-                        $totalRemaining = 0;
-                        $totalExpenseAll = 0;
-                      @endphp
-                      <table class="table">
-                        <thead>
-                          <tr>
-                            <th><h6>Nama Kategori</h6></th>
-                            <th><h6>Jumlah</h6></th>
-                            <th><h6>Jumlah Pengeluaran</h6></th>
-                            <th><h6>Sisa Anggaran</h6></th>
-                            <th class="text-end"><h6>Aksi</h6></th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          @forelse ($budgetDetails as $budgetDetail)
-                            @php
-                                $totalExpense = $budgetDetail->category->expenses->sum('amount');
-                                $remaining = $budgetDetail->amount - $totalExpense;
-                                $totalAmount += $budgetDetail->amount;
-                                $totalExpenseAll += $totalExpense;
-                                $totalRemaining += $remaining;
-                            @endphp
+                    @if ($budgetDetails->isEmpty())
+                      <div class="alert alert-info text-center" role="alert">
+                          Tidak ada data detail anggaran
+                      </div>
+                    @else
+                      <div class="table-wrapper table-responsive">
+                        @php
+                          $totalAmount = 0;
+                          $totalRemaining = 0;
+                          $totalExpenseAll = 0;
+                        @endphp
+                        <table class="table" id="detail-budget-table">
+                          <thead>
                             <tr>
-                              <td><p>{{ $budgetDetail->category->name }}</p></td>
-                              <td><p>{{ number_format($budgetDetail->amount, 0) }} IDR</p></td>
-                              <td><p>{{ number_format($totalExpense, 0) }} IDR</p></td>
-                              <td>
-                                <p class="{{ $remaining < 0 ? 'text-danger' : 'text-success' }}">
-                                  {{ number_format($remaining, 0) }} IDR
-                                </p>
-                              </td>
-                              <td class="action justify-content-end">
-                                <a href="{{ route('budget.detail', ['budget' => $budget->id, 'edit' => $budgetDetail->id]) }}" class="text-dark me-2">
-                                    <i class="lni lni-pencil"></i>
-                                </a>
-                                <a href="{{ route('budget.budgetDetail', ['budgetDetail' => $budgetDetail->id ]) }}" class="text-dark me-2">
-                                  <i class="lni lni-search-alt"></i>
-                                </a>
-                                <form id="delete-form-{{ $budgetDetail->id }}" action="{{ route('budget.budgetDestroy', $budgetDetail->id) }}" method="POST" style="display: inline;">
-                                  @csrf
-                                  @method('DELETE')
-                                  <button type="button" class="btn-delete" data-id="{{ $budgetDetail->id }}">
-                                      <i class="lni lni-trash-can text-danger"></i>
-                                  </button>
-                                </form>
-                              </td>
+                              <th><h6>Nama Kategori</h6></th>
+                              <th><h6>Jumlah</h6></th>
+                              <th><h6>Jumlah Pengeluaran</h6></th>
+                              <th><h6>Sisa Anggaran</h6></th>
+                              <th class="text-end"><h6>Aksi</h6></th>
                             </tr>
-                          @empty
-                            <tr class="text-center">
-                              <td colspan="5">Belum Ada Data Kategori</td>
+                          </thead>
+                          <tbody>
+                            @forelse ($budgetDetails as $budgetDetail)
+                              @php
+                                  $totalExpense = $budgetDetail->category->expenses->sum('amount');
+                                  $remaining = $budgetDetail->amount - $totalExpense;
+                                  $totalAmount += $budgetDetail->amount;
+                                  $totalExpenseAll += $totalExpense;
+                                  $totalRemaining += $remaining;
+                              @endphp
+                              <tr>
+                                <td><p>{{ $budgetDetail->category->name }}</p></td>
+                                <td><p>{{ number_format($budgetDetail->amount, 0) }} IDR</p></td>
+                                <td><p>{{ number_format($totalExpense, 0) }} IDR</p></td>
+                                <td>
+                                  <p class="{{ $remaining < 0 ? 'text-danger' : 'text-success' }}">
+                                    {{ number_format($remaining, 0) }} IDR
+                                  </p>
+                                </td>
+                                <td class="action justify-content-end">
+                                  <a href="{{ route('budget.detail', ['budget' => $budget->id, 'edit' => $budgetDetail->id]) }}" class="text-dark me-2">
+                                      <i class="lni lni-pencil"></i>
+                                  </a>
+                                  <a href="{{ route('budget.budgetDetail', ['budgetDetail' => $budgetDetail->id ]) }}" class="text-dark me-2">
+                                    <i class="lni lni-search-alt"></i>
+                                  </a>
+                                  <form id="delete-form-{{ $budgetDetail->id }}" action="{{ route('budget.budgetDestroy', $budgetDetail->id) }}" method="POST" style="display: inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="button" class="btn-delete" data-id="{{ $budgetDetail->id }}">
+                                        <i class="lni lni-trash-can text-danger"></i>
+                                    </button>
+                                  </form>
+                                </td>
+                              </tr>
+                            @empty
+                              <tr class="text-center">
+                                <td colspan="5"><p>Belum Ada Data Kategori</p></td>
+                              </tr>
+                            @endforelse
+                          </tbody>
+
+                          @if(count($budgetDetails) > 0)
+                          <tr><td colspan="5" style="height: 20px;"></td></tr>
+                          <tfoot>
+                            <tr class="mt-5">
+                              <th><strong>Total</strong></th>
+                              <th><strong>{{ number_format($totalAmount, 0) }} IDR</strong></th>
+                              <th><strong>{{ number_format($totalExpenseAll, 0) }} IDR</strong></th>
+                              <th>
+                                <strong class="{{ $totalRemaining < 0 ? 'text-danger' : 'text-success' }}">
+                                  {{ number_format($totalRemaining, 0) }} IDR
+                                </strong>
+                              </th>
+                              <th></th>
                             </tr>
-                          @endforelse
-                        </tbody>
+                          </tfoot>
+                          @endif
+                        </table>
 
-                        @if(count($budgetDetails) > 0)
-                        <tr><td colspan="5" style="height: 20px;"></td></tr>
-                        <tfoot>
-                          <tr class="mt-5">
-                            <th><strong>Total</strong></th>
-                            <th><strong>{{ number_format($totalAmount, 0) }} IDR</strong></th>
-                            <th><strong>{{ number_format($totalExpenseAll, 0) }} IDR</strong></th>
-                            <th>
-                              <strong class="{{ $totalRemaining < 0 ? 'text-danger' : 'text-success' }}">
-                                {{ number_format($totalRemaining, 0) }} IDR
-                              </strong>
-                            </th>
-                            <th></th>
-                          </tr>
-                        </tfoot>
-                        @endif
-                      </table>
-
-                      <!-- end table -->
-                    </div>
+                        <!-- end table -->
+                      </div>
+                    @endif
                 </div>
             </div>
         </div>

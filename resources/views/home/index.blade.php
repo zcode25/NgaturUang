@@ -169,7 +169,7 @@
                 <div class="title mb-3">
                     <h6 class="text-medium mb-30">Tabel Kategori Pengeluaran</h6>
                 </div>
-                @if ($category_incomes->isEmpty())
+                @if ($category_expenses->isEmpty())
                     <div class="alert alert-info text-center" role="alert">
                         Tidak ada data kategori pengeluaran
                     </div>

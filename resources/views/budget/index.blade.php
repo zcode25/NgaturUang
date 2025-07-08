@@ -29,56 +29,68 @@
                         <a href="{{ route('budget.create') }}" class="main-btn primary-btn btn-sm">Tambah Data <i class="lni lni-plus ms-1"></i></a>
                       </div>
                     </div>
-                    <div class="table-wrapper table-responsive">
-                      <table class="table">
-                        <thead>
-                          <tr>
-                            <th>
-                              <h6>Nama Budget</h6>
-                            </th>
-                            <th>
-                              <h6>Tanggal Mulai</h6>
-                            </th>
-                            <th>
-                              <h6>Tanggal Akhir</h6>
-                            </th>
-                            <th class="text-end">
-                              <h6>Action</h6>
-                            </th>
-                          </tr>
-                          <!-- end table row-->
-                        </thead>
-                        <tbody>
-                          @forelse ($budgets as $budget)
+                    @if ($budgets->isEmpty())
+                      <div class="alert alert-info text-center" role="alert">
+                          Tidak ada data kategori anggaran
+                      </div>
+                    @else
+                      <div class="table-wrapper table-responsive">
+                        <table class="table" id="budget-table">
+                          <thead>
                             <tr>
-                              <td>
-                                <p>{{ $budget->name }}</p>
-                              </td>
-                              <td>
-                                <p>{{ $budget->start_date }}</p>
-                              </td>
-                              <td>
-                                <p>{{ $budget->end_date }}</p>
-                              </td>
-                              <td class="action justify-content-end">
-                                <a href="{{ route('budget.edit', ['budget' => $budget->id ]) }}" class="text-dark me-2">
-                                  <i class="lni lni-pencil"></i>
-                                </a>
-                                <a href="{{ route('budget.detail', ['budget' => $budget->id ]) }}" class="text-dark me-2">
-                                  <i class="lni lni-search-alt"></i>
-                                </a>
-                              </td>
+                              <th>
+                                <h6>No</h6>
+                              </th>
+                              <th>
+                                <h6>Nama Budget</h6>
+                              </th>
+                              <th>
+                                <h6>Tanggal Mulai</h6>
+                              </th>
+                              <th>
+                                <h6>Tanggal Akhir</h6>
+                              </th>
+                              <th class="text-end">
+                                <h6>Action</h6>
+                              </th>
                             </tr>
-                          @empty
-                            <tr class="text-center">
-                              <td colspan="3">Belum Ada Data Kategori</td>
-                            </tr>
-                          @endforelse
-                          <!-- end table row -->
-                        </tbody>
-                      </table>
-                      <!-- end table -->
-                    </div>
+                            <!-- end table row-->
+                          </thead>
+                          <tbody>
+                            @forelse ($budgets as $budget)
+                              <tr>
+                                <td>
+                                  <p>{{ $loop->iteration }}</p>
+                                </td>
+                                <td>
+                                  <p>{{ $budget->name }}</p>
+                                </td>
+                                <td>
+                                  <p>{{ $budget->start_date }}</p>
+                                </td>
+                                <td>
+                                  <p>{{ $budget->end_date }}</p>
+                                </td>
+                                <td class="action justify-content-end">
+                                  <a href="{{ route('budget.edit', ['budget' => $budget->id ]) }}" class="text-dark me-2">
+                                    <i class="lni lni-pencil"></i>
+                                  </a>
+                                  <a href="{{ route('budget.detail', ['budget' => $budget->id ]) }}" class="text-dark me-2">
+                                    <i class="lni lni-search-alt"></i>
+                                  </a>
+                                </td>
+                              </tr>
+                            @empty
+                              <tr class="text-center">
+                                <td colspan="3">Belum Ada Data Kategori</td>
+                              </tr>
+                            @endforelse
+                            <!-- end table row -->
+                          </tbody>
+                        </table>
+                        <!-- end table -->
+                      </div>
+                    @endif
                 </div>
             </div>
         <!-- End Col -->

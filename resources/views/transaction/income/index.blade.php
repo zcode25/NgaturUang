@@ -90,117 +90,123 @@
                   
                 </div>
               </div>
-              <div class="table-wrapper table-responsive">
-                <table class="table" id="income-table">
-                  <thead>
-                    <tr>
-                      <th>
-                        <h6>Tanggal</h6>
-                      </th>
-                      <th>
-                        <h6>Nama Pemasukan</h6>
-                      </th>
-                      <th>
-                        <h6>Kategori</h6>
-                      </th>
-                      <th>
-                        <h6>Dompet & Rekening</h6>
-                      </th>
-                      <th>
-                        <h6>Jumlah</h6>
-                      </th>
-                      <th>
-                        <h6>Exchange Rate</h6>
-                      </th>
-                      <th>
-                        <h6>Total</h6>
-                      </th>
-                      <th class="text-end">
-                        <h6>Action</h6>
-                      </th>
-                    </tr>
-                    <!-- end table row-->
-                  </thead>
-                  <tbody>
-                    @forelse ($incomes as $income)
-                    <tr>
-                      <td>
-                        <p>{{ $income->date }}</p>
-                      </td>
-                      <td>
-                        <p>{{ $income->name }}</p>
-                      </td>
-                      <td>
-                        <p>{{ $income->category->name }}</p>
-                      </td>
-                      <td>
-                        <p>{{ $income->wallet->name }}  {{ $income->wallet->account_number ? ' - ' . $income->wallet->account_number : ''  }} {!! $income->wallet->status == 'active' ? '<span class="text-success">(Aktif)</span>' : '<span class="text-danger">(Nonaktif)</span>' !!} </p>
-                      </td>
-                      <td>
-                        <p class="text-success">+ {{ number_format($income->amount, 0) }} {{ $income->wallet->currency }}</p>
-                      </td>
-                      <td>
-                        <p class="text-success"> {{ number_format($income->exchange_rate, 0) }} IDR</p>
-                      </td>
-                      @if($income->exchange_rate != null)
-                      <td>
-                        <p class="text-success">+ {{ number_format($income->amount * $income->exchange_rate, 0) }} IDR</p>
-                      </td>
-                      @else
-                      <td>
-                        <p class="text-success">+ {{ number_format($income->amount, 0) }} IDR</p>
-                      </td>
-                      @endif
-                      <td>
-                        <div class="action justify-content-end">
-                          @if(request('status') == 'inactive')
-                          <form action="{{ route('income.toggle', ['income' => $income->id]) }}" method="POST" style="display: inline;">
-                            @csrf
-                            @method('PUT')
-                            <button type="submit" class="btn-success">
-                                <i class="lni lni-spinner-arrow text-dark"></i>
-                            </button>
-                          </form>
-                          @else
-                          <a href="{{ route('income.edit', ['income' => $income->id]) }}" class="text-dark me-2">
-                            <i class="lni lni-pencil"></i>
-                          </a>
-                          @endif
-                          @if(request('status') == 'inactive')
-                          <form id="delete-form-{{ $income->id }}" action="{{ route('income.destroy', ['income' => $income->id]) }}" method="POST" style="display: inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="button" class="btn-delete" data-id="{{ $income->id }}">
-                              <i class="lni lni-trash-can text-danger"></i>
-                            </button>
-                          </form>
-                          @else
-                          <form id="delete-form-{{ $income->id }}" action="{{ route('income.destroy', ['income' => $income->id]) }}" method="POST" style="display: inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="button" class="btn-delete" data-id="{{ $income->id }}">
+              @if ($incomes->isEmpty())
+                <div class="alert alert-info text-center" role="alert">
+                    Tidak ada data kategori pemasukan
+                </div>
+              @else
+                <div class="table-wrapper table-responsive">
+                  <table class="table" id="income-table">
+                    <thead>
+                      <tr>
+                        <th>
+                          <h6>Tanggal</h6>
+                        </th>
+                        <th>
+                          <h6>Nama Pemasukan</h6>
+                        </th>
+                        <th>
+                          <h6>Kategori</h6>
+                        </th>
+                        <th>
+                          <h6>Dompet & Rekening</h6>
+                        </th>
+                        <th>
+                          <h6>Jumlah</h6>
+                        </th>
+                        <th>
+                          <h6>Exchange Rate</h6>
+                        </th>
+                        <th>
+                          <h6>Total</h6>
+                        </th>
+                        <th class="text-end">
+                          <h6>Action</h6>
+                        </th>
+                      </tr>
+                      <!-- end table row-->
+                    </thead>
+                    <tbody>
+                      @forelse ($incomes as $income)
+                      <tr>
+                        <td>
+                          <p>{{ $income->date }}</p>
+                        </td>
+                        <td>
+                          <p>{{ $income->name }}</p>
+                        </td>
+                        <td>
+                          <p>{{ $income->category->name }}</p>
+                        </td>
+                        <td>
+                          <p>{{ $income->wallet->name }}  {{ $income->wallet->account_number ? ' - ' . $income->wallet->account_number : ''  }} {!! $income->wallet->status == 'active' ? '<span class="text-success">(Aktif)</span>' : '<span class="text-danger">(Nonaktif)</span>' !!} </p>
+                        </td>
+                        <td>
+                          <p class="text-success">+ {{ number_format($income->amount, 0) }} {{ $income->wallet->currency }}</p>
+                        </td>
+                        <td>
+                          <p class="text-success"> {{ number_format($income->exchange_rate, 0) }} IDR</p>
+                        </td>
+                        @if($income->exchange_rate != null)
+                        <td>
+                          <p class="text-success">+ {{ number_format($income->amount * $income->exchange_rate, 0) }} IDR</p>
+                        </td>
+                        @else
+                        <td>
+                          <p class="text-success">+ {{ number_format($income->amount, 0) }} IDR</p>
+                        </td>
+                        @endif
+                        <td>
+                          <div class="action justify-content-end">
+                            @if(request('status') == 'inactive')
+                            <form action="{{ route('income.toggle', ['income' => $income->id]) }}" method="POST" style="display: inline;">
+                              @csrf
+                              @method('PUT')
+                              <button type="submit" class="btn-success">
+                                  <i class="lni lni-spinner-arrow text-dark"></i>
+                              </button>
+                            </form>
+                            @else
+                            <a href="{{ route('income.edit', ['income' => $income->id]) }}" class="text-dark me-2">
+                              <i class="lni lni-pencil"></i>
+                            </a>
+                            @endif
+                            @if(request('status') == 'inactive')
+                            <form id="delete-form-{{ $income->id }}" action="{{ route('income.destroy', ['income' => $income->id]) }}" method="POST" style="display: inline;">
+                              @csrf
+                              @method('DELETE')
+                              <button type="button" class="btn-delete" data-id="{{ $income->id }}">
                                 <i class="lni lni-trash-can text-danger"></i>
-                            </button>
-                          </form>
-                          @endif
-                          
-                        </div>
-                      </td>
-                    </tr>
-                    @empty
-                    <tr>
-                      @if(request('status') == 'inactive')
-                        <td colspan="8" class="text-medium text-center">Belum Ada Data Pemasukan di Sampah</td>
-                      @else
-                        <td colspan="8" class="text-medium text-center">Belum Ada Data Pemasukan</td>
-                      @endif
-                    </tr>
-                    @endforelse
-                    <!-- end table row -->
-                  </tbody>
-                </table>
-                <!-- end table -->
-              </div>
+                              </button>
+                            </form>
+                            @else
+                            <form id="delete-form-{{ $income->id }}" action="{{ route('income.destroy', ['income' => $income->id]) }}" method="POST" style="display: inline;">
+                              @csrf
+                              @method('DELETE')
+                              <button type="button" class="btn-delete" data-id="{{ $income->id }}">
+                                  <i class="lni lni-trash-can text-danger"></i>
+                              </button>
+                            </form>
+                            @endif
+                            
+                          </div>
+                        </td>
+                      </tr>
+                      @empty
+                      <tr>
+                        @if(request('status') == 'inactive')
+                          <td colspan="8" class="text-medium text-center">Belum Ada Data Pemasukan di Sampah</td>
+                        @else
+                          <td colspan="8" class="text-medium text-center">Belum Ada Data Pemasukan</td>
+                        @endif
+                      </tr>
+                      @endforelse
+                      <!-- end table row -->
+                    </tbody>
+                  </table>
+                  <!-- end table -->
+                </div>
+              @endif
             </div>
           </div>
         <!-- End Col -->
