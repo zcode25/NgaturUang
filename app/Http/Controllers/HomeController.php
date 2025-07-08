@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Wallet;
 use App\Models\Income;
 use App\Models\Expense;
-use Illuminate\Support\Facades\Redis;
 use Carbon\Carbon;
 
 class HomeController extends Controller
@@ -32,123 +31,109 @@ class HomeController extends Controller
                 : $wallet->balance;
         });
 
-        $totalIncome = Income::where('incomes.user_id', $userId)
-            ->where('incomes.status', 'active')
-            ->selectRaw("SUM(CASE 
-                WHEN wallets.currency = 'USD' THEN incomes.amount * incomes.exchange_rate 
-                ELSE incomes.amount 
-                END) as total")
-            ->join('wallets', 'incomes.wallet_id', '=', 'wallets.id')
-            ->value('total') ?? 0;
-
-        $totalExpense = Expense::where('expenses.user_id', $userId)
-            ->where('expenses.status', 'active')
-            ->selectRaw("SUM(CASE 
-                WHEN wallets.currency = 'USD' THEN expenses.amount * expenses.exchange_rate 
-                ELSE expenses.amount 
-                END) as total")
-            ->join('wallets', 'expenses.wallet_id', '=', 'wallets.id')
-            ->value('total') ?? 0;
-
-        // Defaults
-        $bulan = null;
-        $tahun = null;
-        $selectedDate_income = null;
-        $selectedDate_expense = null;
-
-        // INCOME DATES
-        $date_income = DB::table('incomes')
-            ->select(
-                DB::raw("MIN(date) as tanggal_asli"),
-                DB::raw("DATE_FORMAT(MIN(date), '%M %Y') as tanggal"),
-                DB::raw("MONTH(date) as bulan"),
-                DB::raw("YEAR(date) as tahun")
-            )
+       // Ambil bulan-tahun dari `expenses`
+        $expenseMonths = DB::table('expenses')
+            ->selectRaw('YEAR(date) as tahun, MONTH(date) as bulan')
             ->where('user_id', $userId)
-            ->groupBy(DB::raw('YEAR(date)'), DB::raw('MONTH(date)'))
-            ->orderBy(DB::raw('YEAR(date)'), 'desc')
-            ->orderBy(DB::raw('MONTH(date)'), 'desc')
+            ->groupBy('tahun', 'bulan')
             ->get();
 
-        if ($date_income->count() > 0) {
-            $bulan = $date_income[0]->bulan;
-            $tahun = $date_income[0]->tahun;
-            $selectedDate_income = $date_income[0]->tanggal;
-        }
-
-        if ($request->has('date_income')) {
-            $date = $request->input('date_income');
-            [$tahun, $bulan] = explode('-', $date);
-            $selectedDate_income = Carbon::createFromDate($tahun, $bulan)->translatedFormat('F Y');
-        }
-
-        $incomes = collect();
-        $labels_income = collect();
-        $data_income = collect();
-        $total_income = 0;
-
-        if ($bulan && $tahun) {
-            $incomes = Income::select(
-                DB::raw("DATE_FORMAT(date, '%d') as tanggal"),
-                DB::raw("SUM(amount) as budget_income")
-            )
-                ->where('user_id', $userId)
-                ->whereMonth('date', $bulan)
-                ->whereYear('date', $tahun)
-                ->groupBy('date')
-                ->get();
-
-            $labels_income = $incomes->pluck('tanggal');
-            $data_income = $incomes->pluck('budget_income');
-            $total_income = $data_income->sum();
-        }
-
-        // EXPENSE DATES
-        $date_expense = DB::table('expenses')
-            ->select(
-                DB::raw("MIN(date) as tanggal_asli"),
-                DB::raw("DATE_FORMAT(MIN(date), '%M %Y') as tanggal"),
-                DB::raw("MONTH(date) as bulan"),
-                DB::raw("YEAR(date) as tahun")
-            )
+        // Ambil bulan-tahun dari `incomes`
+        $incomeMonths = DB::table('incomes')
+            ->selectRaw('YEAR(date) as tahun, MONTH(date) as bulan')
             ->where('user_id', $userId)
-            ->groupBy(DB::raw('YEAR(date)'), DB::raw('MONTH(date)'))
-            ->orderBy(DB::raw('YEAR(date)'), 'desc')
-            ->orderBy(DB::raw('MONTH(date)'), 'desc')
+            ->groupBy('tahun', 'bulan')
             ->get();
 
-        if ($date_expense->count() > 0) {
-            $bulan = $date_expense[0]->bulan;
-            $tahun = $date_expense[0]->tahun;
-            $selectedDate_expense = $date_expense[0]->tanggal;
+        // Gabungkan dan hilangkan duplikat
+        $availableMonths = $expenseMonths
+            ->concat($incomeMonths)
+            ->unique(function ($item) {
+                return $item->tahun . '-' . str_pad($item->bulan, 2, '0', STR_PAD_LEFT);
+            })
+            ->sortByDesc(function ($item) {
+                return $item->tahun . '-' . str_pad($item->bulan, 2, '0', STR_PAD_LEFT);
+            })
+            ->values();
+
+        $selectedMonth = $request->input('month') ?? now()->format('Y-m');
+
+        $totalIncome = Income::join('wallets', 'incomes.wallet_id', '=', 'wallets.id')
+                        ->where('incomes.user_id', $userId)      // disambiguasi
+                        ->where('incomes.status', 'active')      // disambiguasi
+                        ->selectRaw("
+                            SUM(
+                                CASE
+                                    WHEN wallets.currency = 'USD'
+                                        THEN incomes.amount * incomes.exchange_rate
+                                    ELSE incomes.amount
+                                END
+                            ) as total
+                        ")
+                        ->value('total') ?? 0;
+
+        $totalExpense = Expense::join('wallets', 'expenses.wallet_id', '=', 'wallets.id')
+                        ->where('expenses.user_id', $userId)        // disambiguasi
+                        ->where('expenses.status', 'active')        // disambiguasi
+                        ->selectRaw("
+                            SUM(
+                                CASE
+                                    WHEN wallets.currency = 'USD'
+                                        THEN expenses.amount * expenses.exchange_rate
+                                    ELSE expenses.amount
+                                END
+                            ) as total
+                        ")
+                        ->value('total') ?? 0;
+
+        // Ambil bulan dan tahun dari request (format YYYY-MM)
+        $selectedMonth = $request->input('month', now()->format('Y-m'));
+
+        try {
+            [$tahun, $bulan] = explode('-', $selectedMonth);
+            $startOfMonth = Carbon::createFromDate($tahun, $bulan)->startOfMonth();
+            $endOfMonth = Carbon::createFromDate($tahun, $bulan)->endOfMonth();
+            $selectedDate = Carbon::createFromDate($tahun, $bulan)->translatedFormat('F Y');
+        } catch (\Exception $e) {
+            $startOfMonth = now()->startOfMonth();
+            $endOfMonth = now()->endOfMonth();
+            $selectedDate = now()->translatedFormat('F Y');
         }
 
-        if ($request->has('date_expense')) {
-            $date = $request->input('date_expense');
-            [$tahun, $bulan] = explode('-', $date);
-            $selectedDate_expense = Carbon::createFromDate($tahun, $bulan)->translatedFormat('F Y');
-        }
+        // Ambil income & expense dalam bulan itu
+        $incomes = Income::select(DB::raw("DATE_FORMAT(date, '%d') as tanggal"), DB::raw("SUM(amount) as budget_income"))
+            ->where('user_id', $userId)
+            ->whereBetween('date', [$startOfMonth, $endOfMonth])
+            ->groupBy('date')
+            ->get();
 
-        $expenses = collect();
-        $labels_expense = collect();
-        $data_expense = collect();
-        $total_expense = 0;
+        $expenses = Expense::select(DB::raw("DATE_FORMAT(date, '%d') as tanggal"), DB::raw("SUM(amount) as budget_expense"))
+            ->where('user_id', $userId)
+            ->whereBetween('date', [$startOfMonth, $endOfMonth])
+            ->groupBy('date')
+            ->get();
 
-        if ($bulan && $tahun) {
-            $expenses = Expense::select(
-                DB::raw("DATE_FORMAT(date, '%d') as tanggal"),
-                DB::raw("SUM(amount) as budget_expense")
+        $labels_income = $incomes->pluck('tanggal');
+        $data_income = $incomes->pluck('budget_income');
+        $total_income = $data_income->sum();
+
+        $labels_expense = $expenses->pluck('tanggal');
+        $data_expense = $expenses->pluck('budget_expense');
+        $total_expense = $data_expense->sum();
+
+        // Gabungkan income & expense bulan untuk dropdown
+        $availableMonths = DB::table('incomes')
+            ->select(DB::raw('YEAR(date) as tahun'), DB::raw('MONTH(date) as bulan'))
+            ->where('user_id', $userId)
+            ->union(
+                DB::table('expenses')
+                    ->select(DB::raw('YEAR(date) as tahun'), DB::raw('MONTH(date) as bulan'))
+                    ->where('user_id', $userId)
             )
-                ->where('user_id', $userId)
-                ->whereMonth('date', $bulan)
-                ->whereYear('date', $tahun)
-                ->groupBy('date')
-                ->get();
-
-            $labels_expense = $expenses->pluck('tanggal');
-            $data_expense = $expenses->pluck('budget_expense');
-            $total_expense = $data_expense->sum();
-        }
+            ->distinct()
+            ->orderByDesc('tahun')
+            ->orderByDesc('bulan')
+            ->get();
 
         $category_incomes = Income::where('user_id', $userId)
             ->where('status', 'active')
@@ -170,19 +155,18 @@ class HomeController extends Controller
             'totalBalance' => $totalBalance,
             'totalIncome' => $totalIncome,
             'totalExpense' => $totalExpense,
-            'date_income' => $date_income,
-            'date_expense' => $date_expense,
+            'availableMonths' => $availableMonths,
             'labels_income' => $labels_income,
             'labels_expense' => $labels_expense,
             'data_income' => $data_income,
             'data_expense' => $data_expense,
-            'selectedDate_income' => $selectedDate_income,
-            'selectedDate_expense' => $selectedDate_expense,
+            'selectedDate' => $selectedDate,
             'total_income' => $total_income,
             'total_expense' => $total_expense,
             'category_incomes' => $category_incomes,
             'category_expenses' => $category_expenses,
+            'selectedMonth' => $selectedMonth,
+            'availableMonths' => $availableMonths,
         ]);
     }
-    
 }
