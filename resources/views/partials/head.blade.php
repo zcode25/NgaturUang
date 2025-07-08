@@ -4,5 +4,5 @@
     <link rel="stylesheet" href="/assets/css/fullcalendar.css" />
     <link rel="stylesheet" href="/assets/css/fullcalendar.css" />
     <link rel="stylesheet" href="/assets/css/main.css" />
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">

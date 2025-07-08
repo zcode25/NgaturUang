@@ -16,58 +16,27 @@
 
     <script>
       $(document).ready(function () {
-          $('#category-table').DataTable({
-            language: {
-              emptyTable: "Tidak ada data",
-              zeroRecords: "Tidak ditemukan hasil",
-              infoEmpty: "Menampilkan 0 data",
-            }
-          });
+          $('#category-table').DataTable();
       });
 
       $(document).ready(function () {
-          $('#category-income-table').DataTable({
-            language: {
-              emptyTable: "Tidak ada data",
-              zeroRecords: "Tidak ditemukan hasil",
-              infoEmpty: "Menampilkan 0 data",
-            }
-          });
+          $('#category-income-table').DataTable();
       });
 
       $(document).ready(function () {
-          $('#category-expense-table').DataTable({
-            language: {
-              emptyTable: "Tidak ada data",
-              zeroRecords: "Tidak ditemukan hasil",
-              infoEmpty: "Menampilkan 0 data",
-            }
-          });
+          $('#category-expense-table').DataTable();
       });
 
       $(document).ready(function () {
-          if ($('#income-table').length) {
           $('#income-table').DataTable({
-            order: [[0, 'desc']],
-            language: {
-              emptyTable: "Tidak ada data",
-              zeroRecords: "Tidak ditemukan hasil",
-              infoEmpty: "Menampilkan 0 data",
-            }
+              order: [[0, 'desc']] 
           });
       });
 
       $(document).ready(function () {
-          if ($('#expense-table').length) {
-            $('#expense-table').DataTable({
-              order: [[0, 'desc']],
-              language: {
-                emptyTable: "Tidak ada data",
-                zeroRecords: "Tidak ditemukan hasil",
-                infoEmpty: "Menampilkan 0 data",
-              }
-            });
-          }
+          $('#expense-table').DataTable({
+              order: [[0, 'desc']]
+          });
       });
     </script>
 
