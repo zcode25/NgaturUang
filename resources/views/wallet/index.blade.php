@@ -114,11 +114,11 @@
             <!-- End Col -->
             @empty
             <div class="col-lg-12">
-                <div class="alert alert-warning text-center">
+                <div class="alert alert-info text-center">
                     @if(request('status') == 'inactive')
-                        <p class="text-medium">Belum Ada Data Dompet & Rekening Status Nonaktif</p>
+                        <p class="text-medium">Belum ada data dompet & rekening status nonaktif</p>
                     @else
-                        <p class="text-medium">Belum Ada Data Dompet & Rekening</p>
+                        <p class="text-medium">Belum ada data dompet & rekening</p>
                     @endif
                 </div>
             </div>

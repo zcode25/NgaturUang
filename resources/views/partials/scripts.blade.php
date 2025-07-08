@@ -28,6 +28,14 @@
       });
 
       $(document).ready(function () {
+          $('#budget-table').DataTable();
+      });
+
+      $(document).ready(function () {
+          $('#detail-budget-table').DataTable();
+      });
+
+      $(document).ready(function () {
           $('#income-table').DataTable({
               order: [[0, 'desc']] 
           });

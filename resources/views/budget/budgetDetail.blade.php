@@ -56,75 +56,81 @@
                         <h6 class="text-medium mb-30">Tabel Detail Anggaran</h6>
                       </div>
                     </div>
-                    <div class="table-wrapper table-responsive">
-                      <table class="table">
-                        <thead>
-                          <tr>
-                            <th>
-                              <h6>Tanggal</h6>
-                            </th>
-                            <th>
-                              <h6>Nama Pemasukan</h6>
-                            </th>
-                            <th>
-                              <h6>Kategori</h6>
-                            </th>
-                            <th>
-                              <h6>Dompet & Rekening</h6>
-                            </th>
-                            <th>
-                              <h6>Jumlah</h6>
-                            </th>
-                            <th>
-                              <h6>Exchange Rate</h6>
-                            </th>
-                            <th>
-                              <h6>Total</h6>
-                            </th>
-                          </tr>
-                          <!-- end table row-->
-                        </thead>
-                        <tbody>
-                          @forelse ($expenses as $expense)
-                          <tr>
-                            <td>
-                              <p>{{ $expense->date }}</p>
-                            </td>
-                            <td>
-                              <p>{{ $expense->name }}</p>
-                            </td>
-                            <td>
-                              <p>{{ $expense->category->name }}</p>
-                            </td>
-                            <td>
-                              <p>{{ $expense->wallet->name }}  {{ $expense->wallet->account_number ? ' - ' . $expense->wallet->account_number : ''  }} {!! $expense->wallet->status == 'active' ? '<span class="text-success">(Aktif)</span>' : '<span class="text-danger">(Nonaktif)</span>' !!} </p>
-                            </td>
-                            <td>
-                              <p class="text-danger">+ {{ number_format($expense->amount, 0) }} {{ $expense->wallet->currency }}</p>
-                            </td>
-                            <td>
-                              <p class="text-danger"> {{ number_format($expense->exchange_rate, 0) }} IDR</p>
-                            </td>
-                            @if($expense->exchange_rate != null)
-                            <td>
-                              <p class="text-danger">+ {{ number_format($expense->amount * $expense->exchange_rate, 0) }} IDR</p>
-                            </td>
-                            @else
-                            <td>
-                              <p class="text-danger">+ {{ number_format($expense->amount, 0) }} IDR</p>
-                            </td>
-                            @endif
-                          </tr>
-                          @empty
-                          <tr>
-                              <td colspan="8" class="text-medium text-center">Belum Ada Data Pemasukan</td>
-                          </tr>
-                          @endforelse
-                          <!-- end table row -->
-                        </tbody>
-                      </table>
-                      <!-- end table -->
-                    </div>
+                    @if ($expenses->isEmpty())
+                      <div class="alert alert-info text-center" role="alert">
+                          Tidak ada data detail anggaran
+                      </div>
+                    @else
+                      <div class="table-wrapper table-responsive">
+                        <table class="table" id="detail-budget-table">
+                          <thead>
+                            <tr>
+                              <th>
+                                <h6>Tanggal</h6>
+                              </th>
+                              <th>
+                                <h6>Nama Pemasukan</h6>
+                              </th>
+                              <th>
+                                <h6>Kategori</h6>
+                              </th>
+                              <th>
+                                <h6>Dompet & Rekening</h6>
+                              </th>
+                              <th>
+                                <h6>Jumlah</h6>
+                              </th>
+                              <th>
+                                <h6>Exchange Rate</h6>
+                              </th>
+                              <th>
+                                <h6>Total</h6>
+                              </th>
+                            </tr>
+                            <!-- end table row-->
+                          </thead>
+                          <tbody>
+                            @forelse ($expenses as $expense)
+                            <tr>
+                              <td>
+                                <p>{{ $expense->date }}</p>
+                              </td>
+                              <td>
+                                <p>{{ $expense->name }}</p>
+                              </td>
+                              <td>
+                                <p>{{ $expense->category->name }}</p>
+                              </td>
+                              <td>
+                                <p>{{ $expense->wallet->name }}  {{ $expense->wallet->account_number ? ' - ' . $expense->wallet->account_number : ''  }} {!! $expense->wallet->status == 'active' ? '<span class="text-success">(Aktif)</span>' : '<span class="text-danger">(Nonaktif)</span>' !!} </p>
+                              </td>
+                              <td>
+                                <p class="text-danger">+ {{ number_format($expense->amount, 0) }} {{ $expense->wallet->currency }}</p>
+                              </td>
+                              <td>
+                                <p class="text-danger"> {{ number_format($expense->exchange_rate, 0) }} IDR</p>
+                              </td>
+                              @if($expense->exchange_rate != null)
+                              <td>
+                                <p class="text-danger">+ {{ number_format($expense->amount * $expense->exchange_rate, 0) }} IDR</p>
+                              </td>
+                              @else
+                              <td>
+                                <p class="text-danger">+ {{ number_format($expense->amount, 0) }} IDR</p>
+                              </td>
+                              @endif
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="8" class="text-medium text-center"><p>Belum Ada Data Pemasukan</p></td>
+                            </tr>
+                            @endforelse
+                            <!-- end table row -->
+                          </tbody>
+                        </table>
+                        <!-- end table -->
+                      </div>
+                    @endif
                 </div>
             </div>
         </div>
