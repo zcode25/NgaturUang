@@ -93,7 +93,7 @@
                             @forelse ($expenses as $expense)
                             <tr>
                               <td>
-                                <p>{{ $expense->date }}</p>
+                                <p>{{ \Carbon\Carbon::parse($expense->date)->translatedFormat('j F Y') }}</p>
                               </td>
                               <td>
                                 <p>{{ $expense->name }}</p>
