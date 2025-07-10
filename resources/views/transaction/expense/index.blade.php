@@ -100,6 +100,9 @@
                     <thead>
                       <tr>
                         <th>
+                          <h6>No</h6>
+                        </th>
+                        <th>
                           <h6>Tanggal</h6>
                         </th>
                         <th>
@@ -111,17 +114,17 @@
                         <th>
                           <h6>Dompet & Rekening</h6>
                         </th>
-                        <th>
+                        {{-- <th>
                           <h6>Jumlah</h6>
                         </th>
                         <th>
                           <h6>Exchange Rate</h6>
-                        </th>
+                        </th> --}}
                         <th>
                           <h6>Total</h6>
                         </th>
                         <th class="text-end">
-                          <h6>Action</h6>
+                          <h6>Aksi</h6>
                         </th>
                       </tr>
                       <!-- end table row-->
@@ -129,6 +132,9 @@
                     <tbody>
                       @forelse ($expenses as $expense)
                       <tr>
+                        <td>
+                          <p>{{ $loop->iteration }}</p>
+                        </td>
                         <td>
                           <p>{{ \Carbon\Carbon::parse($expense->date)->translatedFormat('j F Y') }}</p>
                         </td>
@@ -141,12 +147,12 @@
                         <td>
                           <p>{{ $expense->wallet->name }}  {{ $expense->wallet->account_number ? ' - ' . $expense->wallet->account_number : ''  }} {!! $expense->wallet->status == 'active' ? '<span class="text-success">(Aktif)</span>' : '<span class="text-danger">(Nonaktif)</span>' !!} </p>
                         </td>
-                        <td>
+                        {{-- <td>
                           <p class="text-danger">- {{ number_format($expense->amount, 0) }} {{ $expense->wallet->currency }}</p>
                         </td>
                         <td>
                           <p class="text-danger"> {{ number_format($expense->exchange_rate, 0) }} IDR</p>
-                        </td>
+                        </td> --}}
                         @if($expense->exchange_rate != null)
                         <td>
                           <p class="text-danger">- {{ number_format($expense->amount * $expense->exchange_rate, 0) }} IDR</p>

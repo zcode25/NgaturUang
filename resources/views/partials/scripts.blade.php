@@ -16,34 +16,193 @@
 
     <script>
       $(document).ready(function () {
-          $('#category-table').DataTable();
+          $('#category-table').DataTable({
+            language: {
+                  processing:     "Sedang memproses...",
+                  search:         "Cari:",
+                  lengthMenu:     "Tampilkan _MENU_ entri",
+                  info:           "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
+                  infoEmpty:      "Menampilkan 0 sampai 0 dari 0 entri",
+                  infoFiltered:   "(disaring dari _MAX_ total entri)",
+                  infoPostFix:    "",
+                  loadingRecords: "Memuat data...",
+                  zeroRecords:    "Tidak ditemukan data yang cocok",
+                  emptyTable:     "Tidak ada data yang tersedia pada tabel",
+                  paginate: {
+                      first:      "Pertama",
+                      previous:   "Sebelumnya",
+                      next:       "Berikutnya",
+                      last:       "Terakhir"
+                  },
+                  aria: {
+                      sortAscending:  ": aktifkan untuk mengurutkan kolom secara naik",
+                      sortDescending: ": aktifkan untuk mengurutkan kolom secara turun"
+                  }
+              }
+          });
       });
 
       $(document).ready(function () {
-          $('#category-income-table').DataTable();
+          $('#category-income-table').DataTable({
+            language: {
+                  processing:     "Sedang memproses...",
+                  search:         "Cari:",
+                  lengthMenu:     "Tampilkan _MENU_ entri",
+                  info:           "Menampilkan _START_ - _END_ dari _TOTAL_",
+                  infoEmpty:      "Tidak ada data",
+                  infoFiltered:   "(disaring dari _MAX_ total entri)",
+                  infoPostFix:    "",
+                  loadingRecords: "Memuat data...",
+                  zeroRecords:    "Tidak ditemukan data yang cocok",
+                  emptyTable:     "Tidak ada data yang tersedia pada tabel",
+                  paginate: {
+                      first:      "Pertama",
+                      previous:   "Sebelumnya",
+                      next:       "Berikutnya",
+                      last:       "Terakhir"
+                  },
+                  aria: {
+                      sortAscending:  ": aktifkan untuk mengurutkan kolom secara naik",
+                      sortDescending: ": aktifkan untuk mengurutkan kolom secara turun"
+                  }
+              }
+          });
       });
 
       $(document).ready(function () {
-          $('#category-expense-table').DataTable();
+          $('#category-expense-table').DataTable({
+            language: {
+                  processing:     "Sedang memproses...",
+                  search:         "Cari:",
+                  lengthMenu:     "Tampilkan _MENU_ entri",
+                  info:           "Menampilkan _START_ - _END_ dari _TOTAL_",
+                  infoEmpty:      "Tidak ada data",
+                  infoFiltered:   "(disaring dari _MAX_ total entri)",
+                  infoPostFix:    "",
+                  loadingRecords: "Memuat data...",
+                  zeroRecords:    "Tidak ditemukan data yang cocok",
+                  emptyTable:     "Tidak ada data yang tersedia pada tabel",
+                  paginate: {
+                      first:      "Pertama",
+                      previous:   "Sebelumnya",
+                      next:       "Berikutnya",
+                      last:       "Terakhir"
+                  },
+                  aria: {
+                      sortAscending:  ": aktifkan untuk mengurutkan kolom secara naik",
+                      sortDescending: ": aktifkan untuk mengurutkan kolom secara turun"
+                  }
+              }
+          });
       });
 
       $(document).ready(function () {
-          $('#budget-table').DataTable();
+          $('#budget-table').DataTable({
+            language: {
+                  processing:     "Sedang memproses...",
+                  search:         "Cari:",
+                  lengthMenu:     "Tampilkan _MENU_ entri",
+                  info:           "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
+                  infoEmpty:      "Menampilkan 0 sampai 0 dari 0 entri",
+                  infoFiltered:   "(disaring dari _MAX_ total entri)",
+                  infoPostFix:    "",
+                  loadingRecords: "Memuat data...",
+                  zeroRecords:    "Tidak ditemukan data yang cocok",
+                  emptyTable:     "Tidak ada data yang tersedia pada tabel",
+                  paginate: {
+                      first:      "Pertama",
+                      previous:   "Sebelumnya",
+                      next:       "Berikutnya",
+                      last:       "Terakhir"
+                  },
+                  aria: {
+                      sortAscending:  ": aktifkan untuk mengurutkan kolom secara naik",
+                      sortDescending: ": aktifkan untuk mengurutkan kolom secara turun"
+                  }
+              }
+          });
       });
 
       $(document).ready(function () {
-          $('#detail-budget-table').DataTable();
+          $('#detail-budget-table').DataTable({
+            language: {
+                  processing:     "Sedang memproses...",
+                  search:         "Cari:",
+                  lengthMenu:     "Tampilkan _MENU_ entri",
+                  info:           "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
+                  infoEmpty:      "Menampilkan 0 sampai 0 dari 0 entri",
+                  infoFiltered:   "(disaring dari _MAX_ total entri)",
+                  infoPostFix:    "",
+                  loadingRecords: "Memuat data...",
+                  zeroRecords:    "Tidak ditemukan data yang cocok",
+                  emptyTable:     "Tidak ada data yang tersedia pada tabel",
+                  paginate: {
+                      first:      "Pertama",
+                      previous:   "Sebelumnya",
+                      next:       "Berikutnya",
+                      last:       "Terakhir"
+                  },
+                  aria: {
+                      sortAscending:  ": aktifkan untuk mengurutkan kolom secara naik",
+                      sortDescending: ": aktifkan untuk mengurutkan kolom secara turun"
+                  }
+              }
+          });
       });
 
       $(document).ready(function () {
           $('#income-table').DataTable({
-              order: [[0, 'desc']] 
+              // order: [[0, 'desc']],
+              language: {
+                  processing:     "Sedang memproses...",
+                  search:         "Cari:",
+                  lengthMenu:     "Tampilkan _MENU_ entri",
+                  info:           "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
+                  infoEmpty:      "Menampilkan 0 sampai 0 dari 0 entri",
+                  infoFiltered:   "(disaring dari _MAX_ total entri)",
+                  infoPostFix:    "",
+                  loadingRecords: "Memuat data...",
+                  zeroRecords:    "Tidak ditemukan data yang cocok",
+                  emptyTable:     "Tidak ada data yang tersedia pada tabel",
+                  paginate: {
+                      first:      "Pertama",
+                      previous:   "Sebelumnya",
+                      next:       "Berikutnya",
+                      last:       "Terakhir"
+                  },
+                  aria: {
+                      sortAscending:  ": aktifkan untuk mengurutkan kolom secara naik",
+                      sortDescending: ": aktifkan untuk mengurutkan kolom secara turun"
+                  }
+              }
           });
       });
 
       $(document).ready(function () {
           $('#expense-table').DataTable({
-              order: [[0, 'desc']]
+              // order: [[0, 'desc']],
+              language: {
+                  processing:     "Sedang memproses...",
+                  search:         "Cari:",
+                  lengthMenu:     "Tampilkan _MENU_ entri",
+                  info:           "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
+                  infoEmpty:      "Menampilkan 0 sampai 0 dari 0 entri",
+                  infoFiltered:   "(disaring dari _MAX_ total entri)",
+                  infoPostFix:    "",
+                  loadingRecords: "Memuat data...",
+                  zeroRecords:    "Tidak ditemukan data yang cocok",
+                  emptyTable:     "Tidak ada data yang tersedia pada tabel",
+                  paginate: {
+                      first:      "Pertama",
+                      previous:   "Sebelumnya",
+                      next:       "Berikutnya",
+                      last:       "Terakhir"
+                  },
+                  aria: {
+                      sortAscending:  ": aktifkan untuk mengurutkan kolom secara naik",
+                      sortDescending: ": aktifkan untuk mengurutkan kolom secara turun"
+                  }
+              }
           });
       });
     </script>

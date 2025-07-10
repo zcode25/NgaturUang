@@ -51,7 +51,7 @@
                                 <h6>Tanggal Akhir</h6>
                               </th>
                               <th class="text-end">
-                                <h6>Action</h6>
+                                <h6>Aksi</h6>
                               </th>
                             </tr>
                             <!-- end table row-->
