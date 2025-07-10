@@ -28,11 +28,11 @@
                   </div>
                   <div class="col-lg-4">
                     <p class="mb-3">Tanggal Mulai</p>
-                    <h6 class="text-medium mb-30">{{ $budget->start_date }}</h6>
+                    <h6 class="text-medium mb-30">{{ \Carbon\Carbon::parse($budget->start_date)->translatedFormat('j F Y') }}</h6>
                   </div>
                   <div class="col-lg-4">
                     <p class="mb-3">Tanggal Akhir</p>
-                    <h6 class="text-medium mb-30">{{ $budget->end_date }}</h6>
+                    <h6 class="text-medium mb-30">{{ \Carbon\Carbon::parse($budget->end_date)->translatedFormat('j F Y') }}</h6>
                   </div>
                 </div>
               </div>
@@ -87,8 +87,8 @@
                     <!-- Submit button -->
                     <div class="col-4 d-flex flex-column justify-content-center">
                         <div class="button-group d-flex justify-content-start">
-                            <button class="main-btn primary-btn btn-hover text-center">
-                                {{ isset($editDetail) ? 'Perbarui' : 'Tambah' }}
+                            <button class="main-btn primary-btn btn-hover text-center w-100">
+                                {{ isset($editDetail) ? 'Ubah' : 'Tambah' }}
                             </button>
                         </div>
                     </div>

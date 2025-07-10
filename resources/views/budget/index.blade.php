@@ -66,10 +66,10 @@
                                   <p>{{ $budget->name }}</p>
                                 </td>
                                 <td>
-                                  <p>{{ $budget->start_date }}</p>
+                                  <p>{{ \Carbon\Carbon::parse($budget->start_date)->translatedFormat('j F Y') }}</p>
                                 </td>
                                 <td>
-                                  <p>{{ $budget->end_date }}</p>
+                                  <p>{{ \Carbon\Carbon::parse($budget->end_date)->translatedFormat('j F Y') }}</p>
                                 </td>
                                 <td class="action justify-content-end">
                                   <a href="{{ route('budget.edit', ['budget' => $budget->id ]) }}" class="text-dark me-2">

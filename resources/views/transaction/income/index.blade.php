@@ -130,7 +130,7 @@
                       @forelse ($incomes as $income)
                       <tr>
                         <td>
-                          <p>{{ $income->date }}</p>
+                          <p>{{ \Carbon\Carbon::parse($income->date)->translatedFormat('j F Y') }}</p>
                         </td>
                         <td>
                           <p>{{ $income->name }}</p>
