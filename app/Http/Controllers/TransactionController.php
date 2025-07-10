@@ -98,7 +98,7 @@ class TransactionController extends Controller
 
         $incomes = Income::where('user_id', Auth::id())
             ->where('status', $status)
-            ->orderBy('created_at', 'desc')
+            ->orderBy('date', 'desc')
             ->get();
 
         $dailyIncome = Income::where('incomes.user_id', Auth::id())
@@ -325,7 +325,7 @@ class TransactionController extends Controller
 
         $expenses = Expense::where('user_id', Auth::id())
             ->where('status', $status)
-            ->orderBy('created_at', 'desc')
+            ->orderBy('date', 'desc')
             ->get();
 
         $dailyExpense = Expense::where('expenses.user_id', Auth::id())
