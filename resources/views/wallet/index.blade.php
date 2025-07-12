@@ -19,26 +19,35 @@
         </div>
         <!-- ========== title-wrapper end ========== -->
         <div class="row">
-        <div class="col-lg-12">
-            <div class="card-style mb-30">
-            <div class="title d-flex flex-wrap align-items-center justify-content-between">
-                <div class="left">
-                <h6 class="text-medium">Dompet & Rekening</h6>
-                </div>
-                <div class="right">
-                    <a href="{{ route('wallet.create') }}" class="main-btn primary-btn btn-sm">Tambah Data <i class="lni lni-plus ms-1"></i></a>
-                    @if(request('status') === 'inactive')
-                        <a href="{{ route('wallet') }}" class="main-btn success-btn btn-sm">Data Aktif <i class="lni lni-spinner-arrow ms-1"></i></a>
-                    @else
-                        <a href="{{ route('wallet', ['status' => 'inactive']) }}" class="main-btn danger-btn btn-sm">Data Nonaktif <i class="lni lni-spinner-arrow ms-1"></i></a>
-                    @endif
+            <div class="col">
+                <div class="icon-card mb-30">
+                    <div class="col-md-6 d-flex align-items-center gap-3">
+                        <div class="icon purple">
+                            <i class="lni lni-dollar"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1">Total Saldo</h6>
+                            <h3 class="text-bold mb-0">{{ number_format($totalBalance, 0) }} IDR</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-6 d-flex justify-content-md-end justify-content-start gap-2 mt-3 mt-md-0">
+                        <a href="{{ route('wallet.create') }}" class="main-btn primary-btn btn-sm">
+                            Tambah Data <i class="lni lni-plus ms-1"></i>
+                        </a>
+                        @if(request('status') === 'inactive')
+                            <a href="{{ route('wallet') }}" class="main-btn success-btn btn-sm">
+                                Data Aktif <i class="lni lni-spinner-arrow ms-1"></i>
+                            </a>
+                        @else
+                            <a href="{{ route('wallet', ['status' => 'inactive']) }}" class="main-btn danger-btn btn-sm">
+                                Data Nonaktif <i class="lni lni-spinner-arrow ms-1"></i>
+                            </a>
+                        @endif
+                    </div>
                 </div>
             </div>
-            <!-- End Title -->
-            </div>
         </div>
-        <!-- End Col -->
-        </div>
+
         <!-- End Row -->
         <div class="row">
             @forelse ($wallets as $wallet)
@@ -81,7 +90,7 @@
                             
                             <a href="{{ route('wallet.detail', ['id' => $wallet->id]) }}" class="action">
                                 <div class="status-btn dark-btn">
-                                    Detail <i class="lni lni-search-alt ms-1"></i>
+                                    <i class="lni lni-search-alt ms-1"></i>
                                 </div>
                             </a>
                             

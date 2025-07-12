@@ -12,14 +12,23 @@
                     <h2>Halaman Utama</h2>
                 </div>
             </div>
+            <div class="col-md-6">
+                <div class="d-flex justify-content-end mb-2">
+                    <button class="main-btn light-btn btn-sm" id="toggle-visibility">
+                        Tampilkan
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Dropdown Bulan -->
+
+    
     
 
     <!-- Kartu Ringkasan -->
-    <div class="row">
+   <div class="row">
         <div class="col-xl-3 col-lg-6 col-sm-6">
             <div class="icon-card mb-30">
                 <div class="icon purple">
@@ -27,7 +36,7 @@
                 </div>
                 <div class="content">
                     <h6 class="mb-10">Total Saldo</h6>
-                    <h3 class="text-bold mb-10">{{ number_format($totalBalance, 0) }} IDR</h3>
+                    <h3 class="text-bold mb-10"><span class="secure" data-value="{{ number_format($totalBalance, 0) }}">******</span> IDR</h3>
                 </div>
             </div>
         </div>
@@ -38,7 +47,7 @@
                 </div>
                 <div class="content">
                     <h6 class="mb-10">Total Pemasukan</h6>
-                    <h3 class="text-bold mb-10">{{ number_format($totalIncome, 0) }} IDR</h3>
+                    <h3 class="text-bold mb-10"><span class="secure" data-value="{{ number_format($totalIncome, 0) }}">******</span> IDR</h3>
                 </div>
             </div>
         </div>
@@ -49,7 +58,7 @@
                 </div>
                 <div class="content">
                     <h6 class="mb-10">Total Pengeluaran</h6>
-                    <h3 class="text-bold mb-10">{{ number_format($totalExpense, 0) }} IDR</h3>
+                    <h3 class="text-bold mb-10"><span class="secure" data-value="{{ number_format($totalExpense, 0) }}">******</span> IDR</h3>
                 </div>
             </div>
         </div>
@@ -60,8 +69,8 @@
                 </div>
                 <div class="content">
                     <h6 class="mb-10">Total Selisih</h6>
-                    <h3 class="text-bold mb-10 {{ ($totalIncome - $totalExpense) < 0 ? 'text-danger' : 'text-success' }}">
-                        {{ number_format($totalIncome - $totalExpense, 0) }} IDR
+                    <h3 class="text-bold mb-10 {{ $totalSelisih < 0 ? 'text-danger' : 'text-success' }}">
+                        <span class="secure" data-value="{{ number_format($totalSelisih, 0) }}">******</span> IDR
                     </h3>
                 </div>
             </div>
@@ -301,5 +310,19 @@
     };
 
     const myChart2 = new Chart(document.getElementById("Chart2").getContext("2d"), chartConfig_expense);
+
+    let isVisible = false;
+    document.getElementById('toggle-visibility').addEventListener('click', function () {
+        isVisible = !isVisible;
+        document.querySelectorAll('.secure').forEach(el => {
+            el.textContent = isVisible ? el.dataset.value : '******';
+        });
+
+        // const icon = document.getElementById('visibility-icon');
+        // icon.classList.toggle('lni-eye');
+        // icon.classList.toggle('lni-eye-crossed');
+        this.innerHTML = `${isVisible ? 'Sembunyikan' : 'Tampilkan'}`;
+    });
+
 </script>
 @endsection

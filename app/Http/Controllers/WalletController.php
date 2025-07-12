@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Wallet;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 class WalletController extends Controller
 {
@@ -16,8 +17,23 @@ class WalletController extends Controller
             $wallets = Wallet::where('user_id', Auth::id())->where('status', 'inactive')->latest()->get();
         }
 
+        $response = Http::get('https://open.er-api.com/v6/latest/USD');
+
+        if (!$response->ok() || !isset($response['rates']['IDR'])) {
+            return response()->json(['error' => 'Gagal mengambil kurs USD ke IDR'], 500);
+        }
+
+        $usdToIdr = $response['rates']['IDR'];
+
+        $totalBalance = $wallets->sum(function ($wallet) use ($usdToIdr) {
+            return $wallet->currency === 'USD'
+                ? $wallet->balance * $usdToIdr
+                : $wallet->balance;
+        });
+
         return view('wallet.index', [
             'wallets' => $wallets,
+            'totalBalance' => $totalBalance,
         ]);
     }
 
