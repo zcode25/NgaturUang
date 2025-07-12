@@ -9,7 +9,7 @@
         <div class="row align-items-center">
             <div class="col-md-6">
                 <div class="title">
-                    <h2>Sakuku</h2><span>by terasweb.id</span>
+                    <h2>NgaturUang</h2><span>by terasweb.id</span>
                 </div>
             </div>
             <!-- end col -->

@@ -155,6 +155,7 @@ class HomeController extends Controller
             'totalBalance' => $totalBalance,
             'totalIncome' => $totalIncome,
             'totalExpense' => $totalExpense,
+            'totalSelisih' => $totalIncome - $totalExpense,
             'availableMonths' => $availableMonths,
             'labels_income' => $labels_income,
             'labels_expense' => $labels_expense,
