@@ -90,9 +90,13 @@
                   
                 </div>
               </div>
-              @if ($incomes->isEmpty())
+              @if(request('status') == 'inactive' && $incomes->isEmpty())
                 <div class="alert alert-info text-center" role="alert">
-                    Tidak ada data kategori pemasukan
+                  Belum ada data pemasukan di sampah
+                </div>
+              @elseif($incomes->isEmpty())
+                <div class="alert alert-info text-center" role="alert">
+                  Belum ada data pemasukan
                 </div>
               @else
                 <div class="table-wrapper table-responsive">
@@ -155,7 +159,8 @@
                         </td> --}}
                         @if($income->exchange_rate != null)
                         <td>
-                          <p class="text-success">+ {{ number_format($income->amount * $income->exchange_rate, 0) }} IDR</p>
+                          <p class="text-success">+ {{ number_format($income->amount, 0) }} USD (≈ {{ number_format($income->amount * $income->exchange_rate, 0) }} IDR)</p>
+                          <small class="text-muted">Kurs {{ number_format($income->exchange_rate, 0) }} IDR</small>
                         </td>
                         @else
                         <td>
