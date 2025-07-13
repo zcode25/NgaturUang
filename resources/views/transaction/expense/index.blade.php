@@ -90,10 +90,14 @@
                   
                 </div>
               </div>
-              @if ($expenses->isEmpty())
-                <div class="alert alert-info text-center" role="alert">
-                    Tidak ada data kategori pengeluaran
-                </div>
+              @if(request('status') == 'inactive' && $expenses->isEmpty())
+                  <div class="alert alert-info text-center" role="alert">
+                      Belum ada data pengeluaran di sampah
+                  </div>
+              @elseif($expenses->isEmpty())
+                  <div class="alert alert-info text-center" role="alert">
+                      Belum ada data pengeluaran
+                  </div>
               @else
                 <div class="table-wrapper table-responsive">
                   <table class="table" id="expense-table">
@@ -106,7 +110,7 @@
                           <h6>Tanggal</h6>
                         </th>
                         <th>
-                          <h6>Nama Pemasukan</h6>
+                          <h6>Nama Pengeluaran</h6>
                         </th>
                         <th>
                           <h6>Kategori</h6>
@@ -155,7 +159,8 @@
                         </td> --}}
                         @if($expense->exchange_rate != null)
                         <td>
-                          <p class="text-danger">- {{ number_format($expense->amount * $expense->exchange_rate, 0) }} IDR</p>
+                          <p class="text-danger">- {{ number_format($expense->amount, 0) }} USD (≈ {{ number_format($expense->amount * $expense->exchange_rate, 0) }} IDR)</p>
+                          <small class="text-muted">Kurs {{ number_format($expense->exchange_rate, 0) }} IDR</small>
                         </td>
                         @else
                         <td>
@@ -201,9 +206,9 @@
                       @empty
                       <tr>
                         @if(request('status') == 'inactive')
-                          <td colspan="8" class="text-medium text-center">Belum Ada Data Pemasukan di Sampah</td>
+                          <td colspan="8" class="text-medium text-center">Belum Ada Data Pengeluaran di Sampah</td>
                         @else
-                          <td colspan="8" class="text-medium text-center">Belum Ada Data Pemasukan</td>
+                          <td colspan="8" class="text-medium text-center">Belum Ada Data Pengeluaran</td>
                         @endif
                       </tr>
                       @endforelse
