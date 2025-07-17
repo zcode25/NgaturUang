@@ -9,18 +9,19 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\StatementController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\LandingController;
 use Pest\Plugins\Profile;
 
-// Route::get('/home', function () {
-//     return view('home.index');
-// })->name('home')->middleware('auth');
+Route::controller(LandingController::class)->group(function () {
+    Route::get('/', 'index')->name('landing')->middleware('guest');
+});
 
 Route::controller(HomeController::class)->group(function () {
     Route::get('/home', 'index')->name('home')->middleware('auth');
 });
 
 Route::controller(SigninController::class)->group(function () {
-    Route::get('/', 'index')->name('signin')->middleware('guest');
+    Route::get('/login', 'index')->name('signin')->middleware('guest');
     Route::post('/signin/authenticate', 'authenticate')->name('signin.authenticate')->middleware('guest');
     Route::post('/signout', 'signout')->name('signout')->middleware('auth');
 });

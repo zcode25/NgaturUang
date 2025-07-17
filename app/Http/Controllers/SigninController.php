@@ -15,18 +15,26 @@ class SigninController extends Controller
 
     public function authenticate(Request $request): RedirectResponse
     {
-
-        $credentials = $request->validate([
+        // Validasi input
+        $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
- 
-        if (Auth::attempt($credentials)) {
+
+        // Ambil data login saja
+        $credentials = $request->only('email', 'password');
+
+        // Ambil status checkbox 'remember me'
+        $remember = $request->has('remember');
+
+        // Proses login
+        if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
- 
+
             return redirect()->intended('home');
         }
- 
+
+        // Gagal login
         return back()->withErrors([
             'login_error' => 'Email atau password salah.',
         ])->onlyInput('email');
@@ -40,6 +48,6 @@ class SigninController extends Controller
     
         $request->session()->regenerateToken();
     
-        return redirect('/');
+        return redirect(route('signin'));
     }
 }

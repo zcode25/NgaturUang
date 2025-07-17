@@ -78,6 +78,13 @@
                     </div>
                     <!-- end col -->
                     <div class="col-12">
+                        <div class="form-check checkbox-style mb-20">
+                            <input class="form-check-input" type="checkbox" name="remember" value="" id="checkbox-1">
+                            <label class="form-check-label" for="checkbox-1">
+                            Ingatkan Saya</label>
+                        </div>
+                    </div>
+                    <div class="col-12">
                     <div class="button-group d-flex justify-content-center flex-wrap">
                         <button class="main-btn primary-btn btn-hover w-100 text-center">
                         Masuk
