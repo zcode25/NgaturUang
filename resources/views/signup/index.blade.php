@@ -19,24 +19,25 @@
         <!-- ========== title-wrapper end ========== -->
 
         <div class="row g-0 auth-row">
-        <div class="col-lg-6">
-            <div class="auth-cover-wrapper bg-primary-100">
-            <div class="auth-cover">
-                <div class="title text-center">
-                <h1 class="text-primary mb-10">Kelola Keuangan Mu</h1>
-                <p class="text-medium">
-                    Mulai kelola keuangan pribadimu dengan mudah dan teratur.
-                </p>
+            <div class="col-lg-6">
+            <div class="auth-cover-wrapper position-relative" style="background-image: url('/assets/images/landing/bg-hero1.jpg'); background-size: cover; background-position: center; min-height: 500px;">
+
+                <!-- Overlay -->
+                <div class="position-absolute top-0 start-0 w-100 h-100" style="background-color: rgba(0, 0, 0, 0.7); z-index: 1;"></div>
+
+                <!-- Konten -->
+                <div class="auth-cover d-flex flex-column justify-content-center align-items-center text-center text-white px-4 py-5 position-relative" style="z-index: 2; min-height: 500px;">
+                <div class="title mb-4">
+                    <h1 class="mb-3 text-light fw-bold  ">Kelola Keuanganmu</h1>
+                    <p class="text-medium">Mulai kelola keuangan pribadimu dengan mudah dan teratur.</p>
+                    
                 </div>
-                <div class="cover-image">
-                <img src="assets/images/auth/signin-image.svg" alt="" />
                 </div>
-                <div class="shape-image">
-                <img src="assets/images/auth/shape.svg" alt="" />
-                </div>
-            </div>
+
             </div>
         </div>
+
+
         <!-- end col -->
         <div class="col-lg-6">
             <div class="signup-wrapper">
