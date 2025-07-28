@@ -32,12 +32,8 @@
                   </div>
                   <div class="col-lg-3">
                     <p class="mb-3">Jumlah Pengeluaran</p>
-                    <h6 class="text-medium mb-30">{{ number_format($budgetDetail->category->expenses->sum('amount'), 0) }} IDR</h6>
+                    <h6 class="text-medium mb-30">{{ number_format($expenses->sum('amount'), 0) }} IDR</h6>
                   </div>
-                  @php
-                      $totalExpense = $budgetDetail->category->expenses->sum('amount');
-                      $remaining = $budgetDetail->amount - $totalExpense;
-                  @endphp
                   <div class="col-lg-3">
                     <p class="mb-3">Sisa Anggaran</p>
                     <h6 class="text-medium mb-30 {{ $remaining < 0 ? 'text-danger' : 'text-success' }}">{{ number_format($remaining, 0) }} IDR</h6>
@@ -128,7 +124,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="8" class="text-medium text-center"><p>Belum Ada Data Pemasukan</p></td>
+                                <td colspan="8" class="text-medium text-center"><p>Belum Ada Data Pengeluaran</p></td>
                             </tr>
                             @endforelse
                             <!-- end table row -->
