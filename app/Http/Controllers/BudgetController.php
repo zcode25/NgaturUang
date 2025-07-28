@@ -161,10 +161,13 @@ class BudgetController extends Controller
                     ->orderByDesc('created_at')
                     ->get();
 
+        $remaining = $budgetDetail->amount - $expenses->sum('amount');
+
         return view('budget.budgetDetail', [
             'budget' => $budget,
             'budgetDetail' => $budgetDetail,
             'expenses' => $expenses,
+            'remaining' => $remaining,
         ]);
     }
 
