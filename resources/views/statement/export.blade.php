@@ -145,7 +145,7 @@
             </tr>
             @forelse ($statement['transactions'] as $trx)
                 <tr>
-                    <td>{{ \Carbon\Carbon::parse($trx->datetime)->translatedFormat('j F Y') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($trx->date)->translatedFormat('j F Y') }}</td>
                     <td>{{ $trx->description }}</td>
                     <td>{{ $trx->category }}</td>
                     <td class="text-right {{ $trx->type === 'income' ? 'text-success' : '' }}">
