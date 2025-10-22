@@ -6,7 +6,7 @@
     <section class="section">
     <div class="container-fluid">
         <!-- ========== title-wrapper start ========== -->
-        <div class="title-wrapper pt-30">
+        <div class="title-wrapper pt-30 mb-3">
         <div class="row align-items-center">
             <div class="col-md-6">
             <div class="title">
@@ -25,7 +25,7 @@
                 <form id="confirm-form" action="{{ route('wallet.store') }}" method="POST">
                 @csrf
                 <div class="row">
-                    <div class="col-6">
+                    <div class="col-12 col-md-6">
                         <div class="input-style-1">
                             <label for="name">Nama Dompet / Rekening <span class="text-danger">*</span></label>
                             <input type="text" id="name" name="name" placeholder="Masukan nama dompet / rekening" value="{{ old('name') }}" />
@@ -62,16 +62,16 @@
                             @enderror
                         </div>
                         <div class="input-style-1">
-                            <label for="balance">Saldo <span class="text-danger">*</span></label>
-                            <input type="number" id="balance" name="balance" placeholder="Masukan saldo" value="{{ old('balance') }}" />
-                            @error('balance')
+                            <label for="begin_balance">Saldo <span class="text-danger">*</span></label>
+                            <input type="number" id="begin_balance" name="begin_balance" placeholder="Masukan saldo" value="{{ old('begin_balance') }}" />
+                            @error('begin_balance')
                                 <div class="text-danger text-sm mt-2">{{ $message }}</div>
                             @enderror
                         </div>
                         
                     </div>
 
-                    <div class="col-6">
+                    <div class="col-12 col-md-6">
                         <div class="input-style-1">
                             <label for="account_number">Nomor Dompet / Rekening <span class="text-gray text-sm">(Optional jika cash)</span></label>
                             <input type="text" id="account_number" name="account_number" placeholder="Masukan dompet / rekening" value="{{ old('account_number') }}" />

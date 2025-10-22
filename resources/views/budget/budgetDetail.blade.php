@@ -6,7 +6,7 @@
     <section class="section">
     <div class="container-fluid">
         <!-- ========== title-wrapper start ========== -->
-        <div class="title-wrapper pt-30">
+        <div class="title-wrapper pt-30 mb-3">
         <div class="row align-items-center">
             <div class="col-md-6">
             <div class="title">
@@ -32,7 +32,7 @@
                   </div>
                   <div class="col-lg-3">
                     <p class="mb-3">Jumlah Pengeluaran</p>
-                    <h6 class="text-medium mb-30">{{ number_format($expenses->sum('amount'), 0) }} IDR</h6>
+                    <h6 class="text-medium mb-30">{{ number_format($totalExpense, 0) }} IDR</h6>
                   </div>
                   <div class="col-lg-3">
                     <p class="mb-3">Sisa Anggaran</p>

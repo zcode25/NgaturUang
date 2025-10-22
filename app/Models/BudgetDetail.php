@@ -22,9 +22,4 @@ class BudgetDetail extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function expenses()
-    {
-        return $this->hasMany(Expense::class, 'category_id', 'category_id')
-                    ->where('status', 'active');
-    }
 }

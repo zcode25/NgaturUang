@@ -6,7 +6,7 @@
     <section class="section">
     <div class="container-fluid">
         <!-- ========== title-wrapper start ========== -->
-        <div class="title-wrapper pt-30">
+        <div class="title-wrapper pt-30 mb-3">
         <div class="row align-items-center">
             <div class="col-md-6">
             <div class="title">
@@ -48,7 +48,7 @@
                         </div>
 
                         <h3 class="text-bold mb-10">
-                            {{ number_format($wallet->balance, 0) }} {{ $wallet->currency }}
+                            {{ number_format($wallet->calculated_balance, 0) }} {{ $wallet->currency }}
                         </h3>
 
                         @php
@@ -80,7 +80,7 @@
                     <form action="{{ route('wallet.update', ['id' => $wallet->id]) }}" method="POST">
                     @csrf
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-12 col-md-6">
                             <div class="input-style-1">
                                 <label for="name">Nama Dompet / Rekening <span class="text-danger">*</span></label>
                                 <input type="text" id="name" name="name" placeholder="Masukan nama dompet / rekening" value="{{ old('name', $wallet->name) }}" />
@@ -126,7 +126,7 @@
                             
                         </div>
 
-                        <div class="col-6">
+                        <div class="col-12 col-md-6">
                             <div class="input-style-1">
                                 <label for="account_number">Nomor Dompet / Rekening <span class="text-gray text-sm">(Optional jika cash)</span></label>
                                 <input type="text" id="account_number" name="account_number" placeholder="Masukan dompet / rekening" value="{{ old('account_number', $wallet->account_number) }}" />
@@ -171,10 +171,10 @@
             <div class="col-lg-12">
                 <div class="card-style mb-30">
                 <div class="title d-flex flex-wrap align-items-center justify-content-between">
-                    <div class="left">
+                    <div class="left mb-3">
                         <h6 class="text-medium">Perbarui Status {{ $wallet->name }}</h6>
                     </div>
-                    <div class="right">
+                    <div class="right mb-3">
                         <form id="activation-form" action="{{ route('wallet.toggle', ['id' => $wallet->id]) }}" method="POST">
                             @csrf
                             @if($wallet->status === 'active')

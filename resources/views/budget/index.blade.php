@@ -6,16 +6,19 @@
     <section class="section">
     <div class="container-fluid">
         <!-- ========== title-wrapper start ========== -->
-        <div class="title-wrapper pt-30">
-        <div class="row align-items-center">
-            <div class="col-md-6">
-            <div class="title">
-                <h2>Anggaran</h2>
+        <div class="title-wrapper pt-30 mb-3">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="title">
+                        <h2>Anggaran</h2>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex justify-content-md-end mb-2">
+                        <a href="{{ route('budget.create') }}" class="main-btn primary-btn btn-sm">Tambah Data <i class="lni lni-plus ms-1"></i></a>
+                    </div>
+                </div>
             </div>
-            </div>
-            <!-- end col -->
-        </div>
-        <!-- end row -->
         </div>
         <!-- ========== title-wrapper end ========== -->
         <div class="row">
@@ -24,9 +27,6 @@
                     <div class="title d-flex flex-wrap align-items-center justify-content-between mb-3">
                       <div class="left">
                         <h6 class="text-medium mb-30">Tabel Anggaran</h6>
-                      </div>
-                      <div class="right">
-                        <a href="{{ route('budget.create') }}" class="main-btn primary-btn btn-sm">Tambah Data <i class="lni lni-plus ms-1"></i></a>
                       </div>
                     </div>
                     @if ($budgets->isEmpty())

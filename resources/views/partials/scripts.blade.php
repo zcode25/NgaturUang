@@ -10,6 +10,8 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script> 
     
 
     @yield('script')
@@ -17,6 +19,7 @@
     <script>
       $(document).ready(function () {
           $('#category-table').DataTable({
+            responsive:     true,
             language: {
                   processing:     "Sedang memproses...",
                   search:         "Cari:",
@@ -44,6 +47,7 @@
 
       $(document).ready(function () {
           $('#category-income-table').DataTable({
+            responsive:     true,
             language: {
                   processing:     "Sedang memproses...",
                   search:         "Cari:",
@@ -71,6 +75,7 @@
 
       $(document).ready(function () {
           $('#category-expense-table').DataTable({
+            responsive:     true,
             language: {
                   processing:     "Sedang memproses...",
                   search:         "Cari:",
@@ -98,6 +103,7 @@
 
       $(document).ready(function () {
           $('#budget-table').DataTable({
+            responsive:     true,
             language: {
                   processing:     "Sedang memproses...",
                   search:         "Cari:",
@@ -125,6 +131,7 @@
 
       $(document).ready(function () {
           $('#detail-budget-table').DataTable({
+            responsive:     true,
             language: {
                   processing:     "Sedang memproses...",
                   search:         "Cari:",
@@ -153,6 +160,7 @@
       $(document).ready(function () {
           $('#income-table').DataTable({
               // order: [[0, 'desc']],
+              responsive:     true,
               language: {
                   processing:     "Sedang memproses...",
                   search:         "Cari:",
@@ -181,6 +189,7 @@
       $(document).ready(function () {
           $('#expense-table').DataTable({
               // order: [[0, 'desc']],
+              responsive:     true,
               language: {
                   processing:     "Sedang memproses...",
                   search:         "Cari:",

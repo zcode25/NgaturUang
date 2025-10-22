@@ -12,14 +12,9 @@ class Category extends Model
         'user_id',
     ];
 
-    public function incomes()
+    public function transactions()
     {
-        return $this->hasMany(Income::class);
-    }
-
-    public function expenses()
-    {
-        return $this->hasMany(Expense::class);
+        return $this->hasMany(Transaction::class);
     }
 
     public function budgetDetails()

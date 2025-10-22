@@ -6,11 +6,11 @@
     <section class="section">
     <div class="container-fluid">
         <!-- ========== title-wrapper start ========== -->
-        <div class="title-wrapper pt-30">
+        <div class="title-wrapper pt-30 mb-3">
         <div class="row align-items-center">
             <div class="col-md-6">
             <div class="title">
-                <h2>Pengeluaran</h2>
+                <h2>Transaksi</h2>
             </div>
             </div>
             <!-- end col -->
@@ -22,10 +22,10 @@
         <div class="col-lg-12">
             <div class="card-style mb-30">
                 <!-- <h6 class="mb-25">Tambah dompet & rekening</h6> -->
-                <form id="confirm-form" action="{{ route('expense.store') }}" method="POST">
+                <form id="confirm-form" action="{{ route('trans.store') }}" method="POST">
                 @csrf
                 <div class="row">
-                    <div class="col-6">
+                    <div class="col-12 col-md-6">
                         <div class="input-style-1">
                             <label for="date">Tanggal <span class="text-danger">*</span></label>
                             <input type="date" id="date" name="date" placeholder="Masukan tanggal" value="{{ old('date', date('Y-m-d')) }}" />
@@ -34,11 +34,25 @@
                             @enderror
                         </div>
                         <div class="input-style-1">
-                          <label for="name">Nama Pengeluaran <span class="text-danger">*</span></label>
-                          <input type="text" id="name" name="name" placeholder="Masukan nama pengeluaran" value="{{ old('name') }}" />
+                          <label for="name">Nama Transaksi <span class="text-danger">*</span></label>
+                          <input type="text" id="name" name="name" placeholder="Masukan nama transaksi" value="{{ old('name') }}" />
                           @error('name')
                               <div class="text-danger text-sm mt-2">{{ $message }}</div>
                           @enderror
+                        </div>
+                        <div class="select-style-1">
+                            <label for="type">Tipe Transaksi <span class="text-danger">*</span></label>
+                            <div class="select-position">
+                                <select name="type" id="type" required>
+                                    <option value="" disabled selected>Pilih kategori</option>
+                                    @foreach ($types as $type => $label)
+                                        <option value="{{ $type }}" {{ old('type') == $type ? 'selected' : '' }}>{{ $label }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            @error('type')
+                                <div class="text-danger text-sm mt-2">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="select-style-1">
                             <label for="category_id">Kategori <span class="text-danger">*</span></label>
@@ -54,6 +68,12 @@
                                 <div class="text-danger text-sm mt-2">{{ $message }}</div>
                             @enderror
                         </div>
+                        
+                        
+                        
+                    </div>
+
+                    <div class="col-12 col-md-6">
                         <div class="select-style-1">
                             <label for="wallet_id">Dompet & Rekening <span class="text-danger">*</span></label>
                             <div class="select-position">
@@ -68,11 +88,6 @@
                                 <div class="text-danger text-sm mt-2">{{ $message }}</div>
                             @enderror
                         </div>
-                        
-                        
-                    </div>
-
-                    <div class="col-6">
                         <div class="input-style-1">
                           <label for="amount">Jumlah <span class="text-danger">*</span></label>
                           <input type="number" id="amount" name="amount" placeholder="Masukan jumlah" value="{{ old('amount') }}" />
