@@ -44,10 +44,7 @@
                 <a href="{{ route('category') }}" class="{{ request()->is('transaction/category*') ? 'active' : '' }} ms-1"> Kategori </a>
               </li>
               <li>
-                <a href="{{ route('income') }}" class="{{ request()->is('transaction/income*') ? 'active' : '' }} ms-1"> Pemasukan </a>
-              </li>
-              <li>
-                <a href="{{ route('expense') }}" class="{{ request()->is('transaction/expense*') ? 'active' : '' }} ms-1"> Pengeluaran </a>
+                <a href="{{ route('trans') }}" class="{{ request()->is('transaction/trans*') ? 'active' : '' }} ms-1"> Transaksi </a>
               </li>
             </ul>
           </li>

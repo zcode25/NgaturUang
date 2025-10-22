@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Expense extends Model
+class Transaction extends Model
 {
     protected $fillable = [
         'name',
         'amount',
         'description',
         'date',
+        'type',
         'status',
         'user_id',
         'wallet_id',

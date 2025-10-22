@@ -7,17 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class Wallet extends Model
 {
     protected $fillable = [
-        'user_id', 'name', 'type', 'currency', 'balance',
+        'user_id', 'name', 'type', 'currency', 'begin_balance',
         'account_number', 'bank_name', 'description', 'status'
     ];
 
-    public function incomes()
+    public function transactions()
     {
-        return $this->hasMany(Income::class);
-    }
-
-    public function expenses()
-    {
-        return $this->hasMany(Expense::class);
+        return $this->hasMany(Transaction::class);
     }
 }

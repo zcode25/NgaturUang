@@ -7,8 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use App\Models\Wallet;
-use App\Models\Income;
-use App\Models\Expense;
+use App\Models\Transaction;
 use Carbon\Carbon;
 
 class HomeController extends Controller
@@ -24,28 +23,48 @@ class HomeController extends Controller
         $usdToIdr = $response['rates']['IDR'];
         $userId = Auth::id();
 
-        $wallets = Wallet::where('user_id', $userId)->get();
-        $totalBalance = $wallets->sum(function ($wallet) use ($usdToIdr) {
-            return $wallet->currency === 'USD'
-                ? $wallet->balance * $usdToIdr
-                : $wallet->balance;
+        $wallets = Wallet::where('user_id', $userId)
+        ->latest()
+        ->get()
+        ->map(function ($wallet) use ($usdToIdr) {
+            $income = Transaction::where('wallet_id', $wallet->id)
+                ->where('status', 'active')
+                ->where('type', 'income')
+                ->sum('amount');
+
+            $expense = Transaction::where('wallet_id', $wallet->id)
+                ->where('status', 'active')
+                ->where('type', 'expense')
+                ->sum('amount');
+
+            $wallet->calculated_balance = $wallet->begin_balance + $income - $expense;
+
+            $wallet->kurs = $usdToIdr;
+
+            return $wallet;
         });
 
-       // Ambil bulan-tahun dari `expenses`
-        $expenseMonths = DB::table('expenses')
+        $totalBalance = $wallets->sum(function ($wallet) use ($usdToIdr) {
+            return $wallet->currency === 'USD'
+                ? $wallet->calculated_balance * $usdToIdr
+                : $wallet->calculated_balance;
+        });
+
+        $expenseMonths = DB::table('transactions')
             ->selectRaw('YEAR(date) as tahun, MONTH(date) as bulan')
             ->where('user_id', $userId)
+            ->where('type', 'expense')
             ->groupBy('tahun', 'bulan')
             ->get();
 
-        // Ambil bulan-tahun dari `incomes`
-        $incomeMonths = DB::table('incomes')
+        $incomeMonths = DB::table('transactions')
             ->selectRaw('YEAR(date) as tahun, MONTH(date) as bulan')
             ->where('user_id', $userId)
+            ->where('type', 'income')
             ->groupBy('tahun', 'bulan')
             ->get();
 
-        // Gabungkan dan hilangkan duplikat
+
         $availableMonths = $expenseMonths
             ->concat($incomeMonths)
             ->unique(function ($item) {
@@ -58,35 +77,35 @@ class HomeController extends Controller
 
         $selectedMonth = $request->input('month') ?? now()->format('Y-m');
 
-        $totalIncome = Income::join('wallets', 'incomes.wallet_id', '=', 'wallets.id')
-                        ->where('incomes.user_id', $userId)      // disambiguasi
-                        ->where('incomes.status', 'active')      // disambiguasi
-                        ->selectRaw("
-                            SUM(
-                                CASE
-                                    WHEN wallets.currency = 'USD'
-                                        THEN incomes.amount * incomes.exchange_rate
-                                    ELSE incomes.amount
-                                END
-                            ) as total
-                        ")
-                        ->value('total') ?? 0;
+        $totalIncome = Transaction::where('user_id', Auth::id())
+            ->where('status', 'active')
+            ->where('type', 'income')
+            ->selectRaw("
+                SUM(
+                    CASE 
+                        WHEN exchange_rate IS NOT NULL AND exchange_rate > 0 
+                        THEN amount * exchange_rate 
+                        ELSE amount 
+                    END
+                ) as total
+            ")
+            ->value('total') ?? 0;
 
-        $totalExpense = Expense::join('wallets', 'expenses.wallet_id', '=', 'wallets.id')
-                        ->where('expenses.user_id', $userId)        // disambiguasi
-                        ->where('expenses.status', 'active')        // disambiguasi
-                        ->selectRaw("
-                            SUM(
-                                CASE
-                                    WHEN wallets.currency = 'USD'
-                                        THEN expenses.amount * expenses.exchange_rate
-                                    ELSE expenses.amount
-                                END
-                            ) as total
-                        ")
-                        ->value('total') ?? 0;
+        $totalExpense = Transaction::where('user_id', Auth::id())
+            ->where('status', 'active')
+            ->where('type', 'expense')
+            ->selectRaw("
+                SUM(
+                    CASE 
+                        WHEN exchange_rate IS NOT NULL AND exchange_rate > 0 
+                        THEN amount * exchange_rate 
+                        ELSE amount 
+                    END
+                ) as total
+            ")
+            ->value('total') ?? 0;
 
-        // Ambil bulan dan tahun dari request (format YYYY-MM)
+        
         $selectedMonth = $request->input('month', now()->format('Y-m'));
 
         try {
@@ -100,18 +119,39 @@ class HomeController extends Controller
             $selectedDate = now()->translatedFormat('F Y');
         }
 
-        // Ambil income & expense dalam bulan itu
-        $incomes = Income::select(DB::raw("DATE_FORMAT(date, '%d') as tanggal"), DB::raw("SUM(amount) as budget_income"))
-            ->where('user_id', $userId)
-            ->whereBetween('date', [$startOfMonth, $endOfMonth])
-            ->groupBy('date')
-            ->get();
+        $incomes = Transaction::selectRaw("
+            DATE_FORMAT(date, '%d') as tanggal,
+            SUM(
+                CASE 
+                    WHEN exchange_rate IS NOT NULL AND exchange_rate > 0 
+                    THEN amount * exchange_rate 
+                    ELSE amount 
+                END
+            ) as budget_income
+        ")
+        ->where('user_id', $userId)
+        ->where('type', 'income')
+        ->where('status', 'active')
+        ->whereBetween('date', [$startOfMonth, $endOfMonth])
+        ->groupBy('date')
+        ->get();
 
-        $expenses = Expense::select(DB::raw("DATE_FORMAT(date, '%d') as tanggal"), DB::raw("SUM(amount) as budget_expense"))
-            ->where('user_id', $userId)
-            ->whereBetween('date', [$startOfMonth, $endOfMonth])
-            ->groupBy('date')
-            ->get();
+        $expenses = Transaction::selectRaw("
+            DATE_FORMAT(date, '%d') as tanggal,
+            SUM(
+                CASE 
+                    WHEN exchange_rate IS NOT NULL AND exchange_rate > 0 
+                    THEN amount * exchange_rate 
+                    ELSE amount 
+                END
+            ) as budget_expense
+        ")
+        ->where('user_id', $userId)
+        ->where('type', 'expense')
+        ->where('status', 'active')
+        ->whereBetween('date', [$startOfMonth, $endOfMonth])
+        ->groupBy('date')
+        ->get();
 
         $labels_income = $incomes->pluck('tanggal');
         $data_income = $incomes->pluck('budget_income');
@@ -121,30 +161,71 @@ class HomeController extends Controller
         $data_expense = $expenses->pluck('budget_expense');
         $total_expense = $data_expense->sum();
 
-        // Gabungkan income & expense bulan untuk dropdown
-        $availableMonths = DB::table('incomes')
+
+        $availableMonths = DB::table('transactions')
             ->select(DB::raw('YEAR(date) as tahun'), DB::raw('MONTH(date) as bulan'))
             ->where('user_id', $userId)
+            ->where('status', 'active')
+            ->where('type', 'income')
             ->union(
-                DB::table('expenses')
+                DB::table('transactions')
                     ->select(DB::raw('YEAR(date) as tahun'), DB::raw('MONTH(date) as bulan'))
                     ->where('user_id', $userId)
+                    ->where('status', 'active')
+                    ->where('type', 'expense')
             )
             ->distinct()
             ->orderByDesc('tahun')
             ->orderByDesc('bulan')
             ->get();
 
-        $category_incomes = Income::where('user_id', $userId)
+        
+        $totalIncomeMonth = Transaction::where('user_id', Auth::id())
             ->where('status', 'active')
+            ->where('type', 'income')
+            ->whereBetween('date', [$startOfMonth, $endOfMonth])
+            ->selectRaw("
+                SUM(
+                    CASE 
+                        WHEN exchange_rate IS NOT NULL AND exchange_rate > 0 
+                        THEN amount * exchange_rate 
+                        ELSE amount 
+                    END
+                ) as total
+            ")
+            ->value('total') ?? 0;
+
+        $totalExpenseMonth = Transaction::where('user_id', Auth::id())
+            ->where('status', 'active')
+            ->where('type', 'expense')
+            ->whereBetween('date', [$startOfMonth, $endOfMonth])
+            ->selectRaw("
+                SUM(
+                    CASE 
+                        WHEN exchange_rate IS NOT NULL AND exchange_rate > 0 
+                        THEN amount * exchange_rate 
+                        ELSE amount 
+                    END
+                ) as total
+            ")
+            ->value('total') ?? 0;
+
+        $selisihMonth = $totalIncomeMonth - $totalExpenseMonth;
+
+        $category_incomes = Transaction::where('user_id', $userId)
+            ->where('status', 'active')
+            ->where('type', 'income')
+            ->whereBetween('date', [$startOfMonth, $endOfMonth])
             ->select('category_id', DB::raw('SUM(amount) as total'))
             ->groupBy('category_id')
             ->with('category')
             ->orderBy('total', 'desc')
             ->get();
 
-        $category_expenses = Expense::where('user_id', $userId)
+        $category_expenses = Transaction::where('user_id', $userId)
             ->where('status', 'active')
+            ->where('type', 'expense')
+            ->whereBetween('date', [$startOfMonth, $endOfMonth])
             ->select('category_id', DB::raw('SUM(amount) as total'))
             ->groupBy('category_id')
             ->with('category')
@@ -168,6 +249,9 @@ class HomeController extends Controller
             'category_expenses' => $category_expenses,
             'selectedMonth' => $selectedMonth,
             'availableMonths' => $availableMonths,
+            'totalIncomeMonth' => $totalIncomeMonth,
+            'totalExpenseMonth' => $totalExpenseMonth,
+            'selisihMonth' => $selisihMonth,
         ]);
     }
 }

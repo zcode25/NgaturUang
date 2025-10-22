@@ -48,13 +48,12 @@
               </form>
 
               <div class="row mb-3">
-                  <div class="col-xl-12 d-flex gap-2">
+                  <div class="col-12 d-flex justify-content-start gap-2">
                       <form method="GET" action="{{ route('statement.export.excel') }}">
                           <input type="hidden" name="start_date" value="{{ $startDate }}">
                           <input type="hidden" name="end_date" value="{{ $endDate }}">
                           <button class="main-btn success-btn">Export Excel</button>
                       </form>
-
                       <form method="GET" action="{{ route('statement.export.pdf') }}" target="_blank">
                           <input type="hidden" name="start_date" value="{{ $startDate }}">
                           <input type="hidden" name="end_date" value="{{ $endDate }}">
@@ -78,35 +77,35 @@
               </div>
               <div class="card-body">
                   <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-3 mb-3">
                       <div class="card text-center">
                         <div class="card-body">
                           <p class="card-title mb-1">Saldo Awal</p>
-                          <h5 class="card-text">{{ number_format($statement['saldo_awal'], 0) }} IDR</h5>
+                          <h5 class="card-text">{{ number_format($statement['saldo_awal'], 0) }} {{  $statement['wallet']->currency }}</h5>
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3 mb-3">
                       <div class="card text-center">
                         <div class="card-body">
                           <p class="card-title mb-1">Pemasukan</p>
-                          <h5 class="card-text text-success">+ {{ number_format($statement['total_income'], 0) }} IDR</h5>
+                          <h5 class="card-text text-success">{{ number_format($statement['total_income'], 0) }} {{  $statement['wallet']->currency }}</h5>
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3 mb-3">
                       <div class="card text-center">
                         <div class="card-body">
                           <p class="card-title mb-1">Pengeluaran</p>
-                          <h5 class="card-text text-dark">- {{ number_format($statement['total_expense'], 0) }} IDR</h5>
+                          <h5 class="card-text text-danger">{{ number_format($statement['total_expense'], 0) }} {{  $statement['wallet']->currency }}</h5>
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3 mb-3">
                       <div class="card text-center">
                         <div class="card-body">
                           <p class="card-title mb-1">Saldo Akhir</p>
-                          <h5 class="card-text">{{ number_format($statement['saldo_akhir'], 0) }} IDR</h5>
+                          <h5 class="card-text">{{ number_format($statement['saldo_akhir'], 0) }} {{  $statement['wallet']->currency }}</h5>
                         </div>
                       </div>
                     </div>
@@ -118,34 +117,42 @@
                             <tr>
                                 <th>Tanggal</th>
                                 <th>Rincian Transaksi</th>
-                                <th>Tipe Transaksi</th>
+                                <th>Kategori</th>
+                                <th>Tipe</th>
                                 <th class="text-end">Nominal</th>
                                 <th class="text-end">Saldo</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                              <td colspan="4"><strong><em>Saldo Awal</em></strong></td>
-                              <td class="text-end"><strong>{{ number_format($statement['saldo_awal'], 0) }} IDR</strong></td>
+                              <td colspan="5"><strong><em>Saldo Awal</em></strong></td>
+                              <td class="text-end"><strong>{{ number_format($statement['saldo_awal'], 0) }} {{  $statement['wallet']->currency }}</strong></td>
                             </tr>
                             @forelse ($statement['transactions'] as $trx)
                                 <tr>
-                                  <td>{{ \Carbon\Carbon::parse($trx->date)->format('d F Y') }}</td>
-                                  <td>{{ $trx->description }}</td>                                  
-                                  <td>{{ $trx->category }}</td>
-                                  <td class="text-end {{ $trx->type === 'income' ? 'text-success' : 'text-dark' }}">
-                                    {{ $trx->formatted_nominal }}
+                                  <td>{{ \Carbon\Carbon::parse($trx->date)->translatedFormat('j F Y') }}</td>
+                                  <td>{{ $trx->name }}</td>                                  
+                                  <td>{{ $trx->category->name }}</td>                                  
+                                  <td>
+                                    @if ($trx->type == "income")
+                                      <span class="badge bg-success">Pemasukan</span>
+                                    @elseif ($trx->type == "expense")
+                                      <span class="badge bg-danger">Pengeluaran</span>
+                                    @endif
                                   </td>
-                                  <td class="text-end"><strong>{{ $trx->formatted_balance }}</strong></td>
+                                  <td class="text-end {{ $trx->type === 'income' ? 'text-success' : 'text-danger' }}">
+                                    {{ number_format($trx->amount, 0) }} {{  $statement['wallet']->currency }}
+                                  </td>
+                                  <td class="text-end"><strong>{{ number_format($trx->running_balance, 0) }} {{  $statement['wallet']->currency }}</strong></td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="text-center">Tidak ada transaksi</td>
+                                    <td colspan="6" class="text-center">Tidak ada transaksi</td>
                                 </tr>
                             @endforelse
                             <tr>
-                              <td colspan="4"><strong><em>Saldo Akhir</em></strong></td>
-                              <td class="text-end"><strong>{{ number_format($statement['saldo_akhir'], 0) }} IDR</strong></td>
+                              <td colspan="5"><strong><em>Saldo Akhir</em></strong></td>
+                              <td class="text-end"><strong>{{ number_format($statement['saldo_akhir'], 0) }} {{  $statement['wallet']->currency }}</strong></td>
                             </tr>
                         </tbody>
                     </table>

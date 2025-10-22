@@ -6,43 +6,34 @@
     <section class="section">
     <div class="container-fluid">
         <!-- ========== title-wrapper start ========== -->
-        <div class="title-wrapper pt-30">
-        <div class="row align-items-center">
-            <div class="col-md-6">
-            <div class="title">
-                <h2>Dompet & Rekening</h2>
+        <div class="title-wrapper pt-30 mb-3">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="title">
+                        <h2>Dompet & Rekening</h2>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex justify-content-md-end mb-2">
+                        <a href="{{ route('wallet.create') }}" class="main-btn primary-btn btn-sm">
+                            Tambah Data <i class="lni lni-plus ms-1"></i>
+                        </a>
+                    </div>
+                </div>
             </div>
-            </div>
-            <!-- end col -->
         </div>
-        <!-- end row -->
-        </div>
+
+        
         <!-- ========== title-wrapper end ========== -->
         <div class="row">
             <div class="col">
                 <div class="icon-card mb-30">
-                    <div class="col-md-6 d-flex align-items-center gap-3">
-                        <div class="icon purple">
-                            <i class="lni lni-dollar"></i>
-                        </div>
-                        <div>
-                            <h6 class="mb-1">Total Saldo</h6>
-                            <h3 class="text-bold mb-0">{{ number_format($totalBalance, 0) }} IDR</h3>
-                        </div>
+                    <div class="icon purple">
+                        <i class="lni lni-dollar"></i>
                     </div>
-                    <div class="col-md-6 d-flex justify-content-md-end justify-content-start gap-2 mt-3 mt-md-0">
-                        <a href="{{ route('wallet.create') }}" class="main-btn primary-btn btn-sm">
-                            Tambah Data <i class="lni lni-plus ms-1"></i>
-                        </a>
-                        @if(request('status') === 'inactive')
-                            <a href="{{ route('wallet') }}" class="main-btn success-btn btn-sm">
-                                Data Aktif <i class="lni lni-spinner-arrow ms-1"></i>
-                            </a>
-                        @else
-                            <a href="{{ route('wallet', ['status' => 'inactive']) }}" class="main-btn danger-btn btn-sm">
-                                Data Nonaktif <i class="lni lni-spinner-arrow ms-1"></i>
-                            </a>
-                        @endif
+                    <div>
+                        <h6 class="mb-1">Total Saldo</h6>
+                        <h3 class="text-bold mb-0">{{ number_format($totalBalance, 0) }} IDR</h3>
                     </div>
                 </div>
             </div>
@@ -96,9 +87,17 @@
                             
                         </div>
 
-                        <h3 class="text-bold mb-10">
-                            {{ number_format($wallet->balance, 0) }} {{ $wallet->currency }}
+                        <h3 class="text-bold mb-2">
+                            {{ number_format($wallet->calculated_balance, 0, ',', '.') }}
+                            <span class="text-base text-normal">{{ $wallet->currency }}</span>
                         </h3>
+                        @if ($wallet->currency === 'USD')
+                             <p class="text-sm text-gray-500">
+                                Kurs: {{ number_format($wallet->kurs, 0, ',', '.') }} IDR
+                            </p>
+                        @endif
+                       
+                       
 
                         @php
                             $accountLabel = match($wallet->type) {

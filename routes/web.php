@@ -67,6 +67,16 @@ Route::controller(TransactionController::class)->group(function () {
     Route::put('/transaction/expense/{expense}/update', 'expenseUpdate')->name('expense.update')->middleware('auth');
     Route::delete('/transaction/expense/{expense}/destroy', 'expenseDestroy')->name('expense.destroy')->middleware('auth');
     Route::put('/transaction/expense/{expense}/toggle', 'expenseToggle')->name('expense.toggle')->middleware('auth');
+
+
+    // Expense routes
+    Route::get('/transaction/trans', 'trans')->name('trans')->middleware('auth');
+    Route::get('/tranaction/trans/create', 'transCreate')->name('trans.create')->middleware('auth');
+    Route::post('/transaction/trans/store', 'transStore')->name('trans.store')->middleware('auth');
+    Route::get('/transaction/trans/{transaction}/edit', 'transEdit')->name('trans.edit')->middleware('auth');
+    Route::put('/transaction/trans/{transaction}/update', 'transUpdate')->name('trans.update')->middleware('auth');
+    Route::delete('/transaction/trans/{transaction}/destroy', 'transDestroy')->name('trans.destroy')->middleware('auth');
+
 });
 
 Route::controller(BudgetController::class)->group(function () {

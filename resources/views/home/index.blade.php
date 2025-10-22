@@ -5,7 +5,7 @@
 <div class="container-fluid">
 
     <!-- Judul -->
-    <div class="title-wrapper pt-30">
+    <div class="title-wrapper pt-30 mb-3">
         <div class="row align-items-center">
             <div class="col-md-6">
                 <div class="title">
@@ -13,7 +13,7 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="d-flex justify-content-end mb-2">
+                <div class="d-flex justify-content-md-end mb-2">
                     <button class="main-btn light-btn btn-sm" id="toggle-visibility">
                         Tampilkan
                     </button>
@@ -28,7 +28,7 @@
     
 
     <!-- Kartu Ringkasan -->
-   <div class="row">
+    <div class="row">
         <div class="col-xl-3 col-lg-6 col-sm-6">
             <div class="icon-card mb-30">
                 <div class="icon purple">
@@ -105,6 +105,44 @@
                             </div>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <div class="icon-card mb-30">
+                <div class="icon success">
+                    <i class="lni lni-dollar"></i>
+                </div>
+                <div class="content">
+                    <h6 class="mb-10">Pemasukan</h6>
+                    <h3 class="text-bold mb-10">{{ number_format($totalIncomeMonth, 0) }} IDR</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <div class="icon-card mb-30">
+                <div class="icon orange">
+                    <i class="lni lni-dollar"></i>
+                </div>
+                <div class="content">
+                    <h6 class="mb-10">Pengeluaran</h6>
+                    <h3 class="text-bold mb-10">{{ number_format($totalExpenseMonth, 0) }} IDR</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <div class="icon-card mb-30">
+                <div class="icon primary">
+                    <i class="lni lni-dollar"></i>
+                </div>
+                <div class="content">
+                    <h6 class="mb-10">Selisih</h6>
+                    <h3 class="text-bold mb-10 {{ $selisihMonth < 0 ? 'text-danger' : 'text-success' }}">
+                        {{ number_format($selisihMonth, 0) }} IDR
+                    </h3>
                 </div>
             </div>
         </div>

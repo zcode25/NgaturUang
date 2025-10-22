@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Models\Wallet;
 use Illuminate\Support\Facades\Auth;
@@ -9,14 +10,8 @@ use Illuminate\Support\Facades\Http;
 
 class WalletController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $wallets = Wallet::where('user_id', Auth::id())->where('status', 'active')->latest()->get();
-
-        if($request->status == 'inactive') {
-            $wallets = Wallet::where('user_id', Auth::id())->where('status', 'inactive')->latest()->get();
-        }
-
         $response = Http::get('https://open.er-api.com/v6/latest/USD');
 
         if (!$response->ok() || !isset($response['rates']['IDR'])) {
@@ -25,10 +20,31 @@ class WalletController extends Controller
 
         $usdToIdr = $response['rates']['IDR'];
 
+        $wallets = Wallet::where('user_id', Auth::id())
+        ->latest()
+        ->get()
+        ->map(function ($wallet) use ($usdToIdr) {
+            $income = Transaction::where('wallet_id', $wallet->id)
+                ->where('status', 'active')
+                ->where('type', 'income')
+                ->sum('amount');
+
+            $expense = Transaction::where('wallet_id', $wallet->id)
+                ->where('status', 'active')
+                ->where('type', 'expense')
+                ->sum('amount');
+
+            $wallet->calculated_balance = $wallet->begin_balance + $income - $expense;
+
+            $wallet->kurs = $usdToIdr;
+
+            return $wallet;
+        });
+
         $totalBalance = $wallets->sum(function ($wallet) use ($usdToIdr) {
             return $wallet->currency === 'USD'
-                ? $wallet->balance * $usdToIdr
-                : $wallet->balance;
+                ? $wallet->calculated_balance * $usdToIdr
+                : $wallet->calculated_balance;
         });
 
         return view('wallet.index', [
@@ -48,7 +64,7 @@ class WalletController extends Controller
             'name' => 'required|string|max:255',
             'type' => 'required|in:cash,bank,ewallet,other',
             'currency' => 'required|in:IDR,USD',
-            'balance' => 'required|numeric|min:0',
+            'begin_balance' => 'required|numeric|min:0',
             'account_number' => 'nullable|string|max:255',
             'bank_name' => 'nullable|string|max:255',
             'description' => 'nullable|string',
@@ -59,9 +75,9 @@ class WalletController extends Controller
             'type.in' => 'Tipe dompet tidak valid.',
             'currency.required' => 'Mata uang wajib dipilih.',
             'currency.in' => 'Mata uang hanya boleh IDR atau USD.',
-            'balance.required' => 'Saldo wajib dipilih.',
-            'balance.numeric' => 'Saldo harus berupa angka.',
-            'balance.min' => 'Saldo tidak boleh negatif.',
+            'begin_balance.required' => 'Saldo wajib dipilih.',
+            'begin_balance.numeric' => 'Saldo harus berupa angka.',
+            'begin_balance.min' => 'Saldo tidak boleh negatif.',
             'account_number.max' => 'Nomor rekening maksimal 255 karakter.',
             'bank_name.max' => 'Nama bank maksimal 255 karakter.',
             'description.string' => 'Deskripsi harus berupa teks.',
@@ -78,7 +94,21 @@ class WalletController extends Controller
 
     public function detail($id)
     {
-        $wallet = Wallet::findOrFail($id);
+        $wallet = Wallet::where('id', $id)->first();
+
+        if ($wallet) {
+            $income = Transaction::where('wallet_id', $wallet->id)
+                ->where('status', 'active')
+                ->where('type', 'income')
+                ->sum('amount');
+
+            $expense = Transaction::where('wallet_id', $wallet->id)
+                ->where('status', 'active')
+                ->where('type', 'expense')
+                ->sum('amount');
+
+            $wallet->calculated_balance = $wallet->begin_balance + $income - $expense;
+        }
 
         return view('wallet.detail', [
             'wallet' => $wallet,
@@ -87,9 +117,6 @@ class WalletController extends Controller
 
     public function update(Request $request, $id)
     {
-        // dd($request);
-
-
         $wallet = Wallet::findOrFail($id);
 
         $validated = $request->validate([

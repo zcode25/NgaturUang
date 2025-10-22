@@ -6,7 +6,7 @@
     <section class="section">
     <div class="container-fluid">
         <!-- ========== title-wrapper start ========== -->
-        <div class="title-wrapper pt-30">
+        <div class="title-wrapper pt-30 mb-3">
         <div class="row align-items-center">
             <div class="col-md-6">
             <div class="title">
@@ -114,11 +114,6 @@
                       </div>
                     @else
                       <div class="table-wrapper table-responsive">
-                        @php
-                          $totalAmount = 0;
-                          $totalRemaining = 0;
-                          $totalExpenseAll = 0;
-                        @endphp
                         <table class="table" id="detail-budget-table">
                           <thead>
                             <tr>
@@ -131,20 +126,13 @@
                           </thead>
                           <tbody>
                             @forelse ($budgetDetails as $budgetDetail)
-                              @php
-                                  $totalExpense = $budgetDetail->category->expenses->sum('amount');
-                                  $remaining = $budgetDetail->amount - $totalExpense;
-                                  $totalAmount += $budgetDetail->amount;
-                                  $totalExpenseAll += $totalExpense;
-                                  $totalRemaining += $remaining;
-                              @endphp
                               <tr>
                                 <td><p>{{ $budgetDetail->category->name }}</p></td>
                                 <td><p>{{ number_format($budgetDetail->amount, 0) }} IDR</p></td>
-                                <td><p>{{ number_format($totalExpense, 0) }} IDR</p></td>
+                                <td><p>{{ number_format($budgetDetail->total_expense, 0) }} IDR</p></td>
                                 <td>
-                                  <p class="{{ $remaining < 0 ? 'text-danger' : 'text-success' }}">
-                                    {{ number_format($remaining, 0) }} IDR
+                                  <p class="{{ $budgetDetail->remaining < 0 ? 'text-danger' : 'text-success' }}">
+                                    {{ number_format($budgetDetail->remaining, 0) }} IDR
                                   </p>
                                 </td>
                                 <td class="action justify-content-end">
@@ -158,7 +146,7 @@
                                     @csrf
                                     @method('DELETE')
                                     <button type="button" class="btn-delete" data-id="{{ $budgetDetail->id }}">
-                                        <i class="lni lni-trash-can text-danger"></i>
+                                      <i class="lni lni-trash-can text-danger"></i>
                                     </button>
                                   </form>
                                 </td>

@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Budget;
 use App\Models\BudgetDetail;
 use App\Models\Category;
-use App\Models\Expense;
+use App\Models\Transaction;
 use Illuminate\Support\Facades\Auth;
 
 class BudgetController extends Controller
@@ -75,21 +75,49 @@ class BudgetController extends Controller
         return redirect()->route('budget')->with('success', 'Budget berhasil diperbarui.');
     }
 
-    public function detail(Budget $budget, Request $request) {
+    public function detail(Budget $budget, Request $request)
+    {
         if ($budget->user_id !== Auth::id()) {
-            return redirect()->route('budget')->with('error', 'Anda tidak memiliki akses ke budget ini.');
+            return redirect()->route('budget')
+                ->with('error', 'Anda tidak memiliki akses ke budget ini.');
         }
 
         $budgetDetails = BudgetDetail::select('budget_details.*')
-                            ->join('categories', 'budget_details.category_id', '=', 'categories.id')
-                            ->where('budget_details.budget_id', $budget->id)
-                            ->with(['category.expenses' => function ($query) use ($budget) {
-                                $query->where('status', 'active')
-                                    ->whereBetween('date', [$budget->start_date, $budget->end_date]);
-                            }])
-                            ->orderBy('categories.name', 'asc')
-                            ->get();
+            ->join('categories', 'budget_details.category_id', '=', 'categories.id')
+            ->where('budget_details.budget_id', $budget->id)
+            ->with(['category.transactions' => function ($query) use ($budget) {
+                $query->where('status', 'active')
+                    ->where('type', 'expense')
+                    ->whereBetween('date', [$budget->start_date, $budget->end_date]);
+            }])
+            ->orderBy('categories.name', 'asc')
+            ->get();
 
+
+        $totalAmount = 0;
+        $totalExpenseAll = 0;
+        $totalExpense = 0;
+        $totalRemaining = 0;
+        $remaining = 0;
+        
+
+        foreach ($budgetDetails as $detail) {
+            $totalExpense = $detail->category->transactions->sum(function ($trx) {
+                return ($trx->exchange_rate && $trx->exchange_rate > 0)
+                    ? $trx->amount * $trx->exchange_rate
+                    : $trx->amount;
+            });
+
+            $detail->total_expense = $totalExpense;
+            $detail->remaining = $detail->amount - $totalExpense;
+
+            $totalAmount += $detail->amount;
+            $totalExpenseAll += $totalExpense;
+            $totalRemaining += $detail->remaining;
+            $remaining = $detail->amount - $totalExpense;
+        }
+
+        // Jika sedang mode edit
         $editDetail = null;
         if ($request->has('edit')) {
             $editDetail = BudgetDetail::find($request->edit);
@@ -99,7 +127,12 @@ class BudgetController extends Controller
             'budget' => $budget,
             'categories' => Category::where('user_id', Auth::id())->orderBy('name', 'ASC')->get(),
             'budgetDetails' => $budgetDetails,
-            'editDetail' => $editDetail
+            'editDetail' => $editDetail,
+            'totalAmount' => $totalAmount,
+            'totalExpense' => $totalExpense,
+            'totalExpenseAll' => $totalExpenseAll,
+            'remaining' => $remaining,
+            'totalRemaining' => $totalRemaining,
         ]);
     }
 
@@ -154,19 +187,29 @@ class BudgetController extends Controller
 
         $budget = $budgetDetail->budget;
 
-        $expenses = Expense::where('category_id', $budgetDetail->category_id)
+        
+
+        $expenses = Transaction::where('category_id', $budgetDetail->category_id)
                     ->where('status', 'active')
+                    ->where('type', 'expense')
                     ->whereBetween('date', [$budget->start_date, $budget->end_date])
                     ->with('category')
                     ->orderByDesc('created_at')
                     ->get();
 
-        $remaining = $budgetDetail->amount - $expenses->sum('amount');
+        $totalExpense = $expenses->sum(function ($trx) {
+                return ($trx->exchange_rate && $trx->exchange_rate > 0)
+                    ? $trx->amount * $trx->exchange_rate
+                    : $trx->amount;
+            });
+
+        $remaining = $budgetDetail->amount - $totalExpense;
 
         return view('budget.budgetDetail', [
             'budget' => $budget,
             'budgetDetail' => $budgetDetail,
             'expenses' => $expenses,
+            'totalExpense' => $totalExpense,
             'remaining' => $remaining,
         ]);
     }
