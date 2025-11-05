@@ -122,7 +122,7 @@ class TransactionController extends Controller
 
         $selisih = $totalIncome - $totalExpense;
 
-        $transactions = Transaction::where('status', 'active')->orderBy('date', 'DESC')->latest()->get();
+        $transactions = Transaction::where('user_id', Auth::id())->where('status', 'active')->orderBy('date', 'DESC')->latest()->get();
 
         return view('transaction.trans.index', [
             'transactions' => $transactions,
